@@ -1,17 +1,24 @@
 package eu.evops.maven.pluins.cucumber.parallel;
 
 import cucumber.api.cli.Main;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by n450777 on 29/03/2016.
  */
 public class ProcessInThread extends Thread {
+    private Log log = new SystemStreamLog();
+
     private List<String> command;
+
+    private Properties properties;
 
     private List<String> classpath;
 
@@ -21,9 +28,11 @@ public class ProcessInThread extends Thread {
 
     private File stderr;
 
-    public ProcessInThread(List<String> command, String... classpath) {
+    public ProcessInThread(List<String> command, List<String> classpath,
+            Properties properties) {
         this.command = command;
-        this.classpath = Arrays.asList(classpath);
+        this.properties = properties;
+        this.classpath = classpath;
         this.status = -1;
     }
 
@@ -59,7 +68,21 @@ public class ProcessInThread extends Thread {
         classpathString = stringBuilder.toString();
 
         ProcessBuilder builder = new ProcessBuilder(
-                javaBin, "-cp", classpathString, className);
+                javaBin, "-cp", classpathString);
+
+
+        Properties properties = System.getProperties();
+        properties.putAll(this.properties);
+        for (Map.Entry<Object, Object> entry : properties
+                .entrySet()) {
+            // we don't want to copy java properties
+            if(entry.getKey().toString().startsWith("java.")) {
+                continue;
+            }
+            builder.command().add(String.format("-D%s=%s", entry.getKey(), entry.getValue()));
+        }
+
+        builder.command().add(className);
 
         for (String argument : this.command) {
             builder.command().add(argument);
@@ -72,6 +95,8 @@ public class ProcessInThread extends Thread {
         if(this.stdout != null) {
             builder.redirectOutput(this.stdout);
         }
+
+        log.debug(String.format("Running command: %s", builder.command()));
 
         Process process;
         try {
@@ -94,5 +119,9 @@ public class ProcessInThread extends Thread {
 
     public void setStderr(File stderr) {
         this.stderr = stderr;
+    }
+
+    public void setLog(org.apache.maven.plugin.logging.Log log) {
+        this.log = log;
     }
 }

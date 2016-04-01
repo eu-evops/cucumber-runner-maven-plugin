@@ -1,0 +1,58 @@
+[
+  {
+    "id": "feature-1",
+    "description": "description-1",
+    "name": "Name 1",
+    "keyword": "Feature",
+    "line": 1,
+    "uri": "features/feature1.feature",
+    "elements": [
+      {
+        "id": "feature-1;scenario-1",
+        "description": "",
+        "name": "Scenario 1",
+        "keyword": "Scenario",
+        "line": 7,
+        "steps": [],
+        "type": "scenario"
+      },
+      {
+        "id": "feature-1;scenario-2",
+        "description": "",
+        "name": "Scenario 1",
+        "keyword": "Scenario",
+        "line": 7,
+        "steps": [],
+        "type": "scenario"
+      }
+    ]
+  },
+  {
+    "id": "feature-2",
+    "description": "description-2",
+    "name": "Name 2",
+    "keyword": "Feature",
+    "line": 1,
+    "uri": "features/feature2.feature",
+    "elements": [
+      {
+        "id": "feature-2;scenario-1",
+        "description": "",
+        "name": "Scenario 1",
+        "keyword": "Scenario",
+        "line": 7,
+        "steps": [],
+        "type": "scenario"
+      },
+      {
+        "id": "feature-2;scenario-2",
+        "description": "",
+        "name": "Scenario 1",
+        "keyword": "Scenario",
+        "line": 7,
+        "steps": [],
+        "type": "scenario"
+      }
+    ]
+  }
+]
