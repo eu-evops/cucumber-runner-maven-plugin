@@ -2,7 +2,6 @@ package eu.evops.maven.pluins.cucumber.parallel.reporting;
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
-import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,6 +25,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 /**
@@ -94,7 +96,12 @@ public class JunitResultMerger implements ResultMerger {
         }
 
         try {
-            FileUtils.write(outputFile, toString(combinedDocument), false);
+            String documentContents = toString(combinedDocument);
+            Files.write(
+                    Paths.get(outputFile.getAbsolutePath()),
+                    documentContents.getBytes(),
+                    StandardOpenOption.CREATE
+                    );
         } catch (IOException e) {
             throw new MergeException("Could not save output file", e);
         }

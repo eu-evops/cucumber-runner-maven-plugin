@@ -45,7 +45,7 @@ public class JsonResultMergerTest {
 
     @Test
     public void canGenerateCombinedReport() throws IOException, MergeException {
-        System.out.println(FileUtils.readFileToString(outputFile));
+        FileUtils.readFileToString(outputFile);
     }
 
     @Test
@@ -56,6 +56,7 @@ public class JsonResultMergerTest {
         assertEquals(5, json.length());
 
         List<JSONObject> testCases = new ArrayList<>();
+
         for (Object o : json) {
             if(!(o instanceof JSONObject))
                 throw new IllegalArgumentException();

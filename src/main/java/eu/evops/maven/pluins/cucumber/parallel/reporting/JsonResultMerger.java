@@ -6,6 +6,9 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 /**
@@ -44,7 +47,11 @@ public class JsonResultMerger implements ResultMerger {
                     }
                 }
 
-                org.apache.commons.io.FileUtils.write(outputFile, combined.toString(2));
+                Files.write(
+                        Paths.get(outputFile.getAbsolutePath()),
+                        combined.toString(2).getBytes(),
+                        StandardOpenOption.CREATE
+                );
             } catch (IOException e) {
                 throw new MergeException("Could not write to combined json report file", e);
             } catch (JSONException e) {

@@ -50,7 +50,7 @@ public class JunitResultMergerTest {
 
     @Test
     public void canGenerateCombinedReport() throws IOException, MergeException {
-        System.out.println(FileUtils.readFileToString(outputFile));
+        FileUtils.readFileToString(outputFile);
     }
 
     @Test
