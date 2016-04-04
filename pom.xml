@@ -16,6 +16,14 @@
 
     <name>Executes cucumber features in parallel using fork</name>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <developers>
         <developer>
             <name>Stanislaw Wozniak</name>
@@ -27,6 +35,7 @@
         <connection>
             scm:git:git@github.com:eu-evops/cucumber-runner-maven-plugin.git
         </connection>
+        <url>https://github.com/eu-evops/cucumber-runner-maven-plugin</url>
         <tag>cucumber-runner-maven-plugin-1.0</tag>
     </scm>
 
