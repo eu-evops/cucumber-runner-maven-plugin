@@ -24,6 +24,17 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
@@ -40,8 +51,7 @@
                     <dryRun>false</dryRun>
                     <outputFolder>target/cucumber/reports</outputFolder>
                     <features>
-                        <feature>/Users/n450777/git/specifications/autotest/src/test/resources/com/ba/test/flights</feature>
-                        <feature>/Users/n450777/git/specifications/autotest/src/test/resources/com/ba/test/payment</feature>
+                        <feature>src/test/resources</feature>
                     </features>
                     <excludeTags>
                         <excludeTag>@wip</excludeTag>
