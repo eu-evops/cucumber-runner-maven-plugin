@@ -38,66 +38,65 @@ public class Run extends AbstractMojo {
     @Parameter( readonly = true, defaultValue = "${plugin.artifacts}" )
     private List<Artifact> pluginDependencies;
 
-    @Parameter
+    @Parameter(property = "cucumberRunner.outputFolder")
     private File outputFolder;
     /**
      * Where are the feature files, by default src/test/resources
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.features")
     private List<String> features = Arrays.asList("src/test/resources");
 
     /**
      * Only execute scenarios with these tags
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.includeTags")
     private List<String> includeTags = Arrays.asList();
 
     /**
      * Exclude these tags from running, for instance @wip, @manual
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.excludeTags")
     private List<String> excludeTags = Arrays.asList();
 
     /**
      * List of glue
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.gluePaths")
     private List<String> gluePaths = new ArrayList<>();
 
     /**
      * List of plugins in a format of plugin[:path or url]
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.plugins")
     private List<String> plugins = new ArrayList<>();
 
     /**
      * List of scenario name regex expressions to execute
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.scenarioNames")
     private List<String> scenarioNames = new ArrayList<>();
 
     /**
      * Thread timeout in minutes
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.threadTimeout")
     private int threadTimeout = 60;
 
     /**
      * Scenario generator timeout in seconds
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.scenarioGeneratorTimeout")
     private int scenarioGeneratorTimeout = 10;
 
     /**
      * Whether to execute dry run
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.dryRun")
     boolean dryRun = false;
 
     /**
      * Don't colour terminal output.
      */
-    @Parameter
     boolean monochrome = true;
 
     /**
@@ -109,14 +108,14 @@ public class Run extends AbstractMojo {
     /**
      * Number of processes to fork in parallel
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.threadCount")
     int threadCount;
 
     /**
      * Will use reporter merge facility to comine json and junit reports (only if
      * they were specified in the plugin section)
      */
-    @Parameter
+    @Parameter(property = "cucumberRunner.combineReports")
     boolean combineReports;
 
     private File threadFolder;
