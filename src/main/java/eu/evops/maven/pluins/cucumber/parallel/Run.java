@@ -135,7 +135,6 @@ public class Run extends AbstractMojo {
                     .getTestClasspathElements();
             classpath.addAll(getPluginDependencies());
 
-
             // generates thread files
             ProcessInThread main = createProcess(threadedArgs, classpath, project.getProperties());
             main.setLog(getLog());
@@ -391,7 +390,8 @@ public class Run extends AbstractMojo {
     }
 
     private ProcessInThread createProcess(List<String> arguments, List<String> classpath, Properties properties) {
-        return new ProcessInThread(arguments, classpath, properties);
+        String workingDirectory = project.getBuild().getOutputDirectory();
+        return new ProcessInThread(arguments, classpath, properties, workingDirectory);
     }
 
     public List<String> getThreadGeneratorArguments(File threadFolder) {

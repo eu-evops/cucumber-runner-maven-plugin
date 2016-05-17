@@ -28,9 +28,15 @@ public class ProcessInThread extends Thread {
 
     private File stderr;
 
-    public ProcessInThread(List<String> command, List<String> classpath,
-            Properties properties) {
-        this.command = command;
+    private String workingDirectory;
+
+
+    public ProcessInThread(List<String> arguments,
+            List<String> classpath,
+            Properties properties,
+            String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+        this.command = arguments;
         this.properties = properties;
         this.classpath = classpath;
         this.status = -1;
@@ -69,7 +75,7 @@ public class ProcessInThread extends Thread {
 
         ProcessBuilder builder = new ProcessBuilder(
                 javaBin, "-cp", classpathString);
-
+        builder.directory(new File(workingDirectory));
 
         Properties properties = System.getProperties();
         properties.putAll(this.properties);
