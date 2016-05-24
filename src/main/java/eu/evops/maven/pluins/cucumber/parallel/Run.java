@@ -389,7 +389,7 @@ public class Run extends AbstractMojo {
     }
 
     private ProcessInThread createProcess(List<String> arguments, List<String> classpath, Properties properties) {
-        String workingDirectory = project.getBuild().getOutputDirectory();
+        String workingDirectory = project.getBasedir().getAbsolutePath();
         return new ProcessInThread(arguments, classpath, properties, workingDirectory);
     }
 
