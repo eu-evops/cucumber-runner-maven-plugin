@@ -77,8 +77,8 @@ public class ProcessInThread extends Thread {
                 javaBin, "-cp", classpathString);
         builder.directory(new File(workingDirectory));
 
-        Properties properties = System.getProperties();
-        properties.putAll(this.properties);
+        Properties properties = this.properties;
+        properties.putAll(System.getProperties());
         for (Map.Entry<Object, Object> entry : properties
                 .entrySet()) {
             // we don't want to copy java properties
