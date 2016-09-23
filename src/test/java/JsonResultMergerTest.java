@@ -28,7 +28,7 @@ public class JsonResultMergerTest {
     private File outputFile;
 
     @Before
-    public void setup() throws IOException, MergeException {
+    public void setup() throws IOException, MergeException, InterruptedException {
         jsonResultMerger = new JsonResultMerger();
         reports = new ArrayList<>();
 
