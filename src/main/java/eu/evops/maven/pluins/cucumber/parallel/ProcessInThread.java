@@ -30,6 +30,7 @@ public class ProcessInThread extends Thread {
 
     private String workingDirectory;
 
+    private Process process;
 
     public ProcessInThread(List<String> arguments,
             List<String> classpath,
@@ -104,9 +105,9 @@ public class ProcessInThread extends Thread {
 
         log.debug(String.format("Running command: %s", builder.command()));
 
-        Process process;
         try {
             process = builder.start();
+            System.out.println("Adding shutdown hook");
             status = process.waitFor();
         } catch (IOException e) {
             //
@@ -129,5 +130,10 @@ public class ProcessInThread extends Thread {
 
     public void setLog(org.apache.maven.plugin.logging.Log log) {
         this.log = log;
+    }
+
+    public void stopRunning() {
+        System.out.printf("Forcibly stopping process: %s%n", this.process);
+        this.interrupt();
     }
 }

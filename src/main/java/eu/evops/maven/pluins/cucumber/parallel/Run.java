@@ -4,8 +4,11 @@ import eu.evops.maven.pluins.cucumber.parallel.reporting.MergeException;
 import eu.evops.maven.pluins.cucumber.parallel.reporting.Merger;
 import net.masterthought.cucumber.Configuration;
 import net.masterthought.cucumber.ReportBuilder;
+import net.masterthought.cucumber.ValidationException;
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -15,6 +18,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -120,6 +124,9 @@ public class Run extends AbstractMojo {
 
     private File threadFolder;
 
+    // By default it fails
+    private int status = 1;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         setThreadCount();
         setOutputFolder();
@@ -154,7 +161,7 @@ public class Run extends AbstractMojo {
 
             classpath.addAll(getFeatureFolders());
 
-            List<ProcessInThread> threads = new ArrayList<>();
+            final List<ProcessInThread> threads = new ArrayList<>();
             for (int i = 0; i < threadCount; i++) {
                 File threadFolder = getThreadFolder(getThreadFolder(), i);
                 if(!threadFolder.exists()) {
@@ -181,29 +188,33 @@ public class Run extends AbstractMojo {
 
             getLog().info(format("Running cucumber with %d threads, each thread will run up to 1 hour", threads.size()));
 
+            // Force cucumber report classes to be loaded into memory as they won't be added in the shutdown hook
+            Class dummy = Configuration.class;
+            dummy = IOUtil.class;
+            dummy = ValidationException.class;
+            dummy = ReportBuilder.class;
+            dummy = NullOutputStream.class;
+            dummy = DirectoryFileFilter.class;
+            dummy = NameFileFilter.class;
+            dummy = IOCase.class;
+
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println("Cucumber runner finished");
+                        finalise(threads);
+                    } catch (MergeException e) {
+                        e.printStackTrace();
+                    } catch (MojoFailureException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             for (ProcessInThread thread : threads) {
                 thread.join(threadTimeout * 60 * 1000);
                 getLog().debug(format("Thread %s finished", thread));
-            }
-
-            getLog().info("Thread status:");
-            boolean passing = true;
-            for (ProcessInThread thread : threads) {
-                String status = thread.getStatus() == 0 ? "passed" : "failed";
-                getLog().info(format("   Status for %s: %s", thread, status));
-                if(thread.getStatus() != 0) {
-                    passing = false;
-                }
-            }
-
-            if(combineReports) {
-                getLog().info("Generating combined reports");
-                combineReports();
-                report();
-            }
-
-            if(!passing) {
-                throw new MojoFailureException(format("Some of the threads have failed, please inspect output folder: %s", getThreadFolder().getAbsolutePath()));
             }
         }
         // Just rethrow mojo exceptions
@@ -213,6 +224,38 @@ public class Run extends AbstractMojo {
         catch (Throwable throwable) {
             throw new MojoFailureException("Error generating cucumber sets",
                     throwable);
+        }
+
+        System.exit(status);
+    }
+
+    private void finalise(List<ProcessInThread> threads) throws MergeException, MojoFailureException {
+        for(ProcessInThread process : threads) {
+            if(process.isAlive()) {
+                this.status = 1;
+                process.stopRunning();
+            }
+        }
+
+        getLog().info("Thread status:");
+        boolean passing = true;
+        for (ProcessInThread thread : threads) {
+            String status = thread.getStatus() == 0 ? "passed" : "failed";
+            getLog().info(format("   Status for %s: %s", thread, status));
+            if(thread.getStatus() != 0) {
+                passing = false;
+                this.status = 1;
+            }
+        }
+
+        if(combineReports) {
+            getLog().info("Generating combined reports");
+            combineReports();
+            report();
+        }
+
+        if(!passing) {
+            throw new MojoFailureException(format("Some of the threads have failed, please inspect output folder: %s", getThreadFolder().getAbsolutePath()));
         }
     }
 
@@ -266,7 +309,7 @@ public class Run extends AbstractMojo {
 
         Configuration configuration = new Configuration(reportOutputDirectory, projectName);
 // optionally only if you need
-        configuration.setStatusFlags(skippedFails, pendingFails, undefinedFails, missingFails);
+        configuration.setStatusFlags(skippedFails, pendingFails, undefinedFails);
         configuration.setParallelTesting(parallelTesting);
         configuration.setJenkinsBasePath(jenkinsBasePath);
         configuration.setRunWithJenkins(runWithJenkins);
