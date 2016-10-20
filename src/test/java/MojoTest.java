@@ -16,7 +16,7 @@ public class MojoTest {
         System.out.println(resource);
 
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("mvn", "clean", "test-compile", "cucumber-runner:run", "-f", resource);
+        processBuilder.command("mvn", "clean", "integration-test", "-f", resource);
 
         processBuilder.redirectError(new File("/tmp/mytest.err.log"));
         processBuilder.redirectOutput(new File("/tmp/mytest.out.log"));
