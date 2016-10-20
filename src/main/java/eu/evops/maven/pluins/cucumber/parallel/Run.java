@@ -256,17 +256,11 @@ public class Run extends AbstractMojo {
         String jenkinsBasePath = "";
         String buildNumber = "1";
         String projectName = project.getName();
-        boolean skippedFails = true;
-        boolean pendingFails = false;
-        boolean undefinedFails = true;
-        boolean missingFails = true;
         boolean runWithJenkins = false;
         boolean parallelTesting = false;
 
 
         Configuration configuration = new Configuration(reportOutputDirectory, projectName);
-// optionally only if you need
-        configuration.setStatusFlags(skippedFails, pendingFails, undefinedFails, missingFails);
         configuration.setParallelTesting(parallelTesting);
         configuration.setJenkinsBasePath(jenkinsBasePath);
         configuration.setRunWithJenkins(runWithJenkins);
