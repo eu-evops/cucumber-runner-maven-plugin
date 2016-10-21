@@ -6,7 +6,7 @@
 
     <groupId>eu.evops.maven.plugins</groupId>
     <artifactId>cucumber-runner-maven-plugin</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.8-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <description>Maven plugin for running cucumber features in parallel using
         cucumber's Main class. To use it, add it to your pom file as a build
