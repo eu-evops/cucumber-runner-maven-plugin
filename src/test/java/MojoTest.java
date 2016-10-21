@@ -5,14 +5,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Created by n450777 on 20/10/2016.
  */
 public class MojoTest {
 
     @Test
-    public void TestMojo() throws IOException, InterruptedException {
-        String resource = new File(".").getAbsoluteFile().getParent() + "/test-project/pom.xml";
+    public void testCombinedHtmlFolderIsGeneratedWhenAThreadIsStopped() throws IOException, InterruptedException {
+        String resource = String.format("%s/test-project/pom.xml", new File(".").getAbsoluteFile().getParent());
         System.out.println(resource);
 
         ProcessBuilder processBuilder = new ProcessBuilder();
@@ -23,5 +25,12 @@ public class MojoTest {
 
         Process start = processBuilder.start();
         start.waitFor();
+
+        System.out.print("Validate Combined-html folder");
+        String cucumberPath = String.format("%s/test-project/target/cucumber/combined-html/cucumber-html-reports",
+                new File("").getAbsolutePath());
+        File cucumberHtmlReports = new File(cucumberPath);
+        assertTrue("Combined Html Reports are not generated when all/one of the cucumber threads interrupted",
+                cucumberHtmlReports.exists());
     }
 }

@@ -31,6 +31,14 @@
                     <gluePaths>
                         <gluePath>steps</gluePath>
                     </gluePaths>
+                    <combineReports>true</combineReports>
+                    <plugins>
+                        <plugin>html:</plugin>
+                        <plugin>json:</plugin>
+                        <plugin>junit:</plugin>
+                        <plugin>pretty</plugin>
+                    </plugins>
+                    <threadCount>4</threadCount>
                 </configuration>
             </plugin>
         </plugins>
@@ -42,6 +50,11 @@
             <artifactId>cucumber-java</artifactId>
             <version>1.2.5</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.masterthought</groupId>
+            <artifactId>cucumber-reporting</artifactId>
+            <version>2.8.0</version>
         </dependency>
     </dependencies>
 

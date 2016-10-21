@@ -19,10 +19,10 @@ public class JsonResultMerger implements ResultMerger {
     public File merge(File outputFolder, List<String> paths) throws MergeException {
         File outputFile = new File(outputFolder, "combined.json");
         JSONArray combined = new JSONArray();
-
+        String contents = "";
         for (String jsonFile : paths) {
             try {
-                String contents = FileUtils.fileRead(jsonFile);
+                contents = FileUtils.fileRead(jsonFile);
                 JSONArray threadReport = new JSONArray(contents);
 
                 // for each of test suites
@@ -55,7 +55,8 @@ public class JsonResultMerger implements ResultMerger {
             } catch (IOException e) {
                 throw new MergeException("Could not write to combined json report file", e);
             } catch (JSONException e) {
-                throw new MergeException("Could not parse json file", e);
+                System.out.println(String.format("Ignoring the report.json file [%s] due to json parsing issue", jsonFile));
+                System.out.println(String.format("Ignored Report Content: \n [%s]", contents));
             }
         }
 

@@ -1,6 +1,5 @@
 package steps;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 
 /**
@@ -11,7 +10,8 @@ public class TestSteps {
     public void iKillThreadIfValueIsMoreThan(int currentValue, int threshold) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         if(currentValue > threshold) {
-            System.out.println("We should be killing this thread");
+            System.out.println("Killing this thread");
+            Thread.currentThread().stop();
         }
     }
 }
