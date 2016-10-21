@@ -8,7 +8,7 @@ Maven plugin for running cucumber features in parallel using cucumber's Main cla
     <plugin>
           <groupId>eu.evops.maven.plugins</groupId>
           <artifactId>cucumber-runner-maven-plugin</artifactId>
-          <version>1.0</version>
+          <version>1.7</version>
      </plugin>
     </plugins>
   </build>
