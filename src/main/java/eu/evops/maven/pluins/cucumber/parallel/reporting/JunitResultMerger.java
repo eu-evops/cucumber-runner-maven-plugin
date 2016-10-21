@@ -73,7 +73,7 @@ public class JunitResultMerger implements ResultMerger {
             } catch (IOException e) {
                 throw new MergeException("Could not read file: " + path, e);
             } catch (SAXException e) {
-                throw new MergeException("Could not parse xml file: " + path, e);
+                System.out.println(String.format("Ignoring the report.xml file [%s] due to xml parsing issue", path));
             }
         }
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>pom-test</name>
+    <artifactId>pom-test</artifactId>
+    <groupId>pom-test-group</groupId>
+    <version>1.0-SNAPSHOT</version>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>eu.evops.maven.plugins</groupId>
+                <artifactId>cucumber-runner-maven-plugin</artifactId>
+                <version>1.7-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>integration</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <features>
+                        <feature>src/test/resources</feature>
+                    </features>
+                    <gluePaths>
+                        <gluePath>steps</gluePath>
+                    </gluePaths>
+                    <combineReports>true</combineReports>
+                    <plugins>
+                        <plugin>html:</plugin>
+                        <plugin>json:</plugin>
+                        <plugin>junit:</plugin>
+                        <plugin>pretty</plugin>
+                    </plugins>
+                    <threadCount>4</threadCount>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>1.2.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.masterthought</groupId>
+            <artifactId>cucumber-reporting</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+    </dependencies>
+
+</project>
