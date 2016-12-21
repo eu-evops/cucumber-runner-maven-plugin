@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Created by n450777 on 29/03/2016.
@@ -21,6 +23,7 @@ public class ProcessInThread extends Thread {
     private Properties properties;
 
     private List<String> classpath;
+    private int threadTimeout;
 
     private int status;
 
@@ -29,16 +32,19 @@ public class ProcessInThread extends Thread {
     private File stderr;
 
     private String workingDirectory;
+    private Consumer<ProcessInThread> finishCallback;
 
 
     public ProcessInThread(List<String> arguments,
-            List<String> classpath,
-            Properties properties,
-            String workingDirectory) {
+                           List<String> classpath,
+                           Properties properties,
+                           String workingDirectory,
+                           int threadTimeout) {
         this.workingDirectory = workingDirectory;
         this.command = arguments;
         this.properties = properties;
         this.classpath = classpath;
+        this.threadTimeout = threadTimeout;
         this.status = -1;
     }
 
@@ -107,12 +113,21 @@ public class ProcessInThread extends Thread {
         Process process;
         try {
             process = builder.start();
-            status = process.waitFor();
+            process.waitFor(threadTimeout, TimeUnit.SECONDS);
+            status = process.exitValue();
         } catch (IOException e) {
             //
         } catch (InterruptedException e) {
             // e.printStackTrace();
+        } finally {
+            if(this.finishCallback != null) {
+                this.finishCallback.accept(this);
+            }
         }
+    }
+
+    public void onFinish(Consumer<ProcessInThread> predicate) {
+        this.finishCallback = predicate;
     }
 
     public int getStatus() {
