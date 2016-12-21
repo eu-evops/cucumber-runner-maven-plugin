@@ -135,7 +135,7 @@ public class Run extends AbstractMojo {
             classpath.addAll(getPluginDependencies());
 
             // generates thread files
-            ProcessInThread main = createProcess(threadedArgs, classpath, project.getProperties());
+            ProcessInThread main = createProcess(threadedArgs, classpath, project.getProperties(), threadTimeout);
             main.setLog(getLog());
             main.setStderr(new File(getThreadFolder(), "generator-stderr.log"));
             main.setStdout(new File(getThreadFolder(), "generator-stdout.log"));
@@ -156,6 +156,7 @@ public class Run extends AbstractMojo {
 
             List<ProcessInThread> threads = new ArrayList<>();
             for (int i = 0; i < threadCount; i++) {
+                int threadId = i;
                 File threadFolder = getThreadFolder(getThreadFolder(), i);
                 if(!threadFolder.exists()) {
                     getLog().warn(format(
@@ -170,30 +171,24 @@ public class Run extends AbstractMojo {
                 File stderr = new File(format("%s/thread-%d/stderr.log",
                         getThreadFolder().getAbsolutePath(), i));
 
-                ProcessInThread thread = createProcess(threadArguments, classpath, project.getProperties());
+                ProcessInThread thread = createProcess(threadArguments, classpath, project.getProperties(), threadTimeout);
                 thread.setLog(getLog());
                 thread.setStdout(stdout);
                 thread.setStderr(stderr);
 
-                thread.start();
                 threads.add(thread);
+                thread.onFinish(t -> {
+                    String status = t.getStatus() == 0 ? "passed" : "failed";
+                    getLog().info(format("- Thread %d has finished with status: %s", threadId, status));
+                });
+
+                thread.start();
             }
 
             getLog().info(format("Running cucumber with %d threads, each thread will run up to 1 hour", threads.size()));
 
-            for (ProcessInThread thread : threads) {
-                thread.join(threadTimeout * 60 * 1000);
-                getLog().debug(format("Thread %s finished", thread));
-            }
-
-            getLog().info("Thread status:");
-            boolean passing = true;
-            for (ProcessInThread thread : threads) {
-                String status = thread.getStatus() == 0 ? "passed" : "failed";
-                getLog().info(format("   Status for %s: %s", thread, status));
-                if(thread.getStatus() != 0) {
-                    passing = false;
-                }
+            while(hasRunningThreads(threads)) {
+                Thread.sleep(1000);
             }
 
             if(combineReports) {
@@ -202,7 +197,7 @@ public class Run extends AbstractMojo {
                 report();
             }
 
-            if(!passing) {
+            if(!haveAllThreadsPassed(threads)) {
                 throw new MojoFailureException(format("Some of the threads have failed, please inspect output folder: %s", getThreadFolder().getAbsolutePath()));
             }
         }
@@ -214,6 +209,22 @@ public class Run extends AbstractMojo {
             throw new MojoFailureException("Error generating cucumber sets",
                     throwable);
         }
+    }
+
+    private boolean haveAllThreadsPassed(List<ProcessInThread> threads) {
+        return threads
+                .stream()
+                .filter(t -> t.getStatus() != 0)
+                .toArray()
+                .length == 0;
+    }
+
+    private boolean hasRunningThreads(List<ProcessInThread> threads) {
+        return threads
+                .stream()
+                .filter(t -> t.isAlive())
+                .toArray()
+                .length > 0;
     }
 
     private void combineReports() throws MergeException, MojoFailureException {
@@ -337,18 +348,18 @@ public class Run extends AbstractMojo {
         }
 
         threadFolder = new File(project.getBuild().getDirectory(), "cucumber/threads");
-        if(outputFolder != null) {
-            threadFolder = outputFolder;
-            getLog().warn(format("This folder will be deleted in about 10 seconds, press CTRL+C to stop"));
-            getLog().warn(format("- %s", threadFolder.getAbsolutePath()));
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new MojoFailureException(
-                        format("Interrupted deletion of %s", threadFolder
-                        .getAbsolutePath()));
-            }
-        }
+//        if(outputFolder != null) {
+//            threadFolder = outputFolder;
+//            getLog().warn(format("This folder will be deleted in about 10 seconds, press CTRL+C to stop"));
+//            getLog().warn(format("- %s", threadFolder.getAbsolutePath()));
+//            try {
+//                Thread.sleep(10000);
+//            } catch (InterruptedException e) {
+//                throw new MojoFailureException(
+//                        format("Interrupted deletion of %s", threadFolder
+//                        .getAbsolutePath()));
+//            }
+//        }
 
         try {
             FileUtils.deleteDirectory(threadFolder);
@@ -382,9 +393,9 @@ public class Run extends AbstractMojo {
         return arguments;
     }
 
-    private ProcessInThread createProcess(List<String> arguments, List<String> classpath, Properties properties) {
+    private ProcessInThread createProcess(List<String> arguments, List<String> classpath, Properties properties, int threadTimeout) {
         String workingDirectory = project.getBasedir().getAbsolutePath();
-        return new ProcessInThread(arguments, classpath, properties, workingDirectory);
+        return new ProcessInThread(arguments, classpath, properties, workingDirectory, threadTimeout);
     }
 
     public List<String> getThreadGeneratorArguments(File threadFolder) {
