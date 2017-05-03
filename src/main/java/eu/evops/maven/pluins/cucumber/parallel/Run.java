@@ -337,18 +337,6 @@ public class Run extends AbstractMojo {
         }
 
         threadFolder = new File(project.getBuild().getDirectory(), "cucumber/threads");
-        if(outputFolder != null) {
-            threadFolder = outputFolder;
-            getLog().warn(format("This folder will be deleted in about 10 seconds, press CTRL+C to stop"));
-            getLog().warn(format("- %s", threadFolder.getAbsolutePath()));
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new MojoFailureException(
-                        format("Interrupted deletion of %s", threadFolder
-                        .getAbsolutePath()));
-            }
-        }
 
         try {
             FileUtils.deleteDirectory(threadFolder);
@@ -402,11 +390,17 @@ public class Run extends AbstractMojo {
         args.add(CucumberArguments.Monochrome.getArg());
 
         for (String tag : excludeTags) {
+            if(tag == null) {
+                continue;
+            }
             args.add(CucumberArguments.Tags.getArg());
             args.add(format("~%s", tag));
         }
 
         for (String tag : includeTags) {
+            if(tag == null) {
+                continue;
+            }
             args.add(CucumberArguments.Tags.getArg());
             args.add(tag);
         }

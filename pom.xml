@@ -71,7 +71,7 @@
             <plugin>
                 <groupId>eu.evops.maven.plugins</groupId>
                 <artifactId>cucumber-runner-maven-plugin</artifactId>
-                <version>1.0</version>
+                <version>${project.version}</version>
                 <configuration>
                     <dryRun>false</dryRun>
                     <outputFolder>target/cucumber/reports</outputFolder>
@@ -83,6 +83,8 @@
                         <excludeTag>@manual</excludeTag>
                     </excludeTags>
                     <includeTags>
+                        <!-- Specifically adding empty tag -->
+                        <includeTag></includeTag>
                     </includeTags>
                     <gluePaths>
                         <gluePath>com.ba.test.autotest</gluePath>
