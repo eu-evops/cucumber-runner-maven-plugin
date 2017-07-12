@@ -76,8 +76,6 @@ public class CustomJSONFormatter implements Reporter, Formatter {
         return lastWithValue;
     }
 
-
-
     public void uri(String uri) {
         this.uri = uri;
     }
@@ -173,7 +171,6 @@ public class CustomJSONFormatter implements Reporter, Formatter {
     public void syntaxError(String state, String event, List<String> legalEvents, String uri, Integer line) {
         throw new UnsupportedOperationException();
     }
-
 
     public void startOfScenarioLifeCycle(Scenario scenario) {
         try {
