@@ -3,6 +3,7 @@ package eu.evops.maven.pluins.cucumber.parallel.reporting;
 import org.codehaus.plexus.util.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +28,16 @@ public class JsonResultMerger implements ResultMerger {
 
                 // for each of test suites
                 for (int i = 0; i < threadReport.length(); i++) {
+                    JSONArray jsonElements = threadReport.getJSONObject(i).getJSONArray("elements");
+                    /* For each element inside a test suite(feature)*/
+                    for (int m = 0; m < jsonElements.length(); m++) {
+                        JSONObject obj = jsonElements.getJSONObject(m);
+                        /* Remove the element array from the Threadreport if it is of type 'Scenario Outline'*/
+                        if (obj.get("type").equals("scenario_outline")) {
+                            jsonElements.remove(m);
+                        }
+                    }
+
                     String suiteId = threadReport.getJSONObject(i).getString("id");
                     // find test suite in the combined report
                     boolean matchFound = false;

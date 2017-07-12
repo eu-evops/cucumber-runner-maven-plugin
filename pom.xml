@@ -91,7 +91,7 @@
                     </gluePaths>
                     <plugins>
                         <plugin>html:</plugin>
-                        <plugin>json:</plugin>
+                        <plugin>CustomJSONFormatter:</plugin>
                         <plugin>junit:</plugin>
                         <plugin>pretty</plugin>
                     </plugins>

@@ -14,7 +14,7 @@
             <plugin>
                 <groupId>eu.evops.maven.plugins</groupId>
                 <artifactId>cucumber-runner-maven-plugin</artifactId>
-                <version>1.7-SNAPSHOT</version>
+                <version>1.9-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>integration</id>
@@ -34,7 +34,7 @@
                     <combineReports>true</combineReports>
                     <plugins>
                         <plugin>html:</plugin>
-                        <plugin>json:</plugin>
+                        <plugin>CustomJSONFormatter:</plugin>
                         <plugin>junit:</plugin>
                         <plugin>pretty</plugin>
                     </plugins>
