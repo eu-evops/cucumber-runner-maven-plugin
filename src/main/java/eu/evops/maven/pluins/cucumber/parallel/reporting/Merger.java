@@ -19,10 +19,14 @@ public enum Merger {
     public static ResultMerger get(String merger) throws MergeException {
         for (Merger m : Merger.values()) {
             if(m.name().equalsIgnoreCase(merger)) {
-                return m.getMerger();
+                if(m.name().equals("CustomJSONFormatter")){
+                    return Json.getMerger();
+                }
+                else{
+                    return m.getMerger();
+                }
             }
         }
-
         throw new MergeException("Could not find result merger for " + merger.toString());
     }
 }

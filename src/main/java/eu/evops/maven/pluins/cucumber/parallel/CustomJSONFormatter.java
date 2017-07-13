@@ -26,6 +26,7 @@ public class CustomJSONFormatter implements Reporter, Formatter {
     private String uri;
     private List<Map> beforeHooks = new ArrayList<Map>();
     private enum Phase {step, match, embedding, output, result};
+    private boolean inScenarioOutline = false;
 
     public CustomJSONFormatter(File out) {
         this.fileOutputStream = out;
@@ -99,15 +100,16 @@ public class CustomJSONFormatter implements Reporter, Formatter {
     }
 
     public void scenarioOutline(ScenarioOutline scenarioOutline) {
-        getFeatureElements().add(scenarioOutline.toMap());
+        this.inScenarioOutline=true;
     }
 
     public void examples(Examples examples) {
-        getAllExamples().add(examples.toMap());
     }
 
     public void step(Step step) {
-        getSteps().add(step.toMap());
+        if(!inScenarioOutline){
+            getSteps().add(step.toMap());
+        }
     }
 
     public void match(Match match) {
@@ -173,22 +175,18 @@ public class CustomJSONFormatter implements Reporter, Formatter {
     }
 
     public void startOfScenarioLifeCycle(Scenario scenario) {
-        try {
-            if(!fileOutputStream.exists()){
-                fileOutputStream.createNewFile();
-            }
-        }
-        catch (Exception ex) {
-            //TODO
-        }
+        inScenarioOutline = false;
     }
 
     public void endOfScenarioLifeCycle(Scenario scenario) {
         try {
-                FileUtils.write(fileOutputStream, gson().toJson(featureMaps), "UTF-8", false);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if(!fileOutputStream.exists()){
+                fileOutputStream.createNewFile();
             }
+            FileUtils.write(fileOutputStream, gson().toJson(featureMaps), "UTF-8", false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<Map<String, Object>> getFeatureElements() {

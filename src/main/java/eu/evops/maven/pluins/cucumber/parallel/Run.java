@@ -220,9 +220,6 @@ public class Run extends AbstractMojo {
         for (String plugin : plugins) {
             String pluginName = plugin.split(":")[0];
             if(pluginName.matches("^(CustomJSONFormatter|junit)")) {
-                if(pluginName.equals("CustomJSONFormatter")){
-                    pluginName="json";
-                }
                 Merger.get(pluginName).merge(getThreadFolder(), findReports(getReportFileName(pluginName)));
             }
         }
