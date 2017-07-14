@@ -20,7 +20,7 @@ public enum Merger {
     public static ResultMerger get(String merger) throws MergeException {
         for (Merger m : Merger.values()) {
             if(m.name().equalsIgnoreCase(merger)) {
-                    return m.getMerger();
+                return m.getMerger();
             }
             if(merger.contains("CustomJSONFormatter")){
                 return CustomJSONFormatter.getMerger();
