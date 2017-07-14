@@ -18,7 +18,17 @@ import java.util.Map;
 /**
  * Created by n471306 on 06/07/2017.
  */
-public class CustomJSONFormatter implements Reporter, Formatter {
+
+/*This Formatter has been added to update the report.json after the end of each Scenario life cycle,
+* to make sure that reports are updated after every scenario.
+*
+* EARLIER: When a running Thread is killed because of some reason, the report was not generated at all since the report
+* only gets updated after the end of execution of all scenarios.
+*
+* NOW: The report will get updated after the end of every scenario, and in the event of a Thread getting killed,
+* we still would be able to get the results for the executed scenarios.*/
+
+public class StreamingJSONFormatter implements Reporter, Formatter {
 
     private final List<Map<String, Object>> featureMaps = new ArrayList<Map<String, Object>>();
     private File fileOutputStream;
@@ -28,7 +38,7 @@ public class CustomJSONFormatter implements Reporter, Formatter {
     private enum Phase {step, match, embedding, output, result};
     private boolean inScenarioOutline = false;
 
-    public CustomJSONFormatter(File out) {
+    public StreamingJSONFormatter(File out) {
         this.fileOutputStream = out;
     }
 

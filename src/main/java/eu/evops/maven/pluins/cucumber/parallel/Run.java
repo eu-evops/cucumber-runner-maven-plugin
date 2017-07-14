@@ -219,7 +219,7 @@ public class Run extends AbstractMojo {
     private void combineReports() throws MergeException, MojoFailureException {
         for (String plugin : plugins) {
             String pluginName = plugin.split(":")[0];
-            if(pluginName.matches("^(eu.evops.maven.pluins.cucumber.parallel.CustomJSONFormatter|junit)")) {
+            if(pluginName.matches("^(eu.evops.maven.pluins.cucumber.parallel.StreamingJSONFormatter|junit)")) {
                 Merger.get(pluginName).merge(getThreadFolder(), findReports(getReportFileName(pluginName)));
             }
         }
@@ -321,7 +321,7 @@ public class Run extends AbstractMojo {
             return "report.xml";
         case "rerun":
             return "rerun.txt";
-        case "eu.evops.maven.pluins.cucumber.parallel.CustomJSONFormatter":
+        case "eu.evops.maven.pluins.cucumber.parallel.StreamingJSONFormatter":
             return "report.json";
         default:
             return formatterName;
