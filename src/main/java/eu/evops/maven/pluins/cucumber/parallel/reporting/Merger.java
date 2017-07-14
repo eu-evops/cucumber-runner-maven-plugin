@@ -5,7 +5,8 @@ package eu.evops.maven.pluins.cucumber.parallel.reporting;
  */
 public enum Merger {
     Junit(new JunitResultMerger()),
-    Json(new JsonResultMerger());
+    Json(new JsonResultMerger()),
+    CustomJSONFormatter(new JsonResultMerger());
 
     private ResultMerger merger;
     Merger(ResultMerger merger) {
@@ -19,12 +20,10 @@ public enum Merger {
     public static ResultMerger get(String merger) throws MergeException {
         for (Merger m : Merger.values()) {
             if(m.name().equalsIgnoreCase(merger)) {
-                if(m.name().equals("CustomJSONFormatter")){
-                    return Json.getMerger();
-                }
-                else{
                     return m.getMerger();
-                }
+            }
+            if(merger.contains("CustomJSONFormatter")){
+                return CustomJSONFormatter.getMerger();
             }
         }
         throw new MergeException("Could not find result merger for " + merger.toString());

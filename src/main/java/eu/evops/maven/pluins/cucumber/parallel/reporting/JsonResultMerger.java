@@ -3,7 +3,6 @@ package eu.evops.maven.pluins.cucumber.parallel.reporting;
 import org.codehaus.plexus.util.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;

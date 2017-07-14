@@ -34,7 +34,7 @@
                     <combineReports>true</combineReports>
                     <plugins>
                         <plugin>html:</plugin>
-                        <plugin>CustomJSONFormatter:</plugin>
+                        <plugin>eu.evops.maven.pluins.cucumber.parallel.CustomJSONFormatter:</plugin>
                         <plugin>junit:</plugin>
                         <plugin>pretty</plugin>
                     </plugins>

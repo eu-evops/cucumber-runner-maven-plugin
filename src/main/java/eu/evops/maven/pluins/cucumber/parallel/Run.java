@@ -219,7 +219,7 @@ public class Run extends AbstractMojo {
     private void combineReports() throws MergeException, MojoFailureException {
         for (String plugin : plugins) {
             String pluginName = plugin.split(":")[0];
-            if(pluginName.matches("^(CustomJSONFormatter|junit)")) {
+            if(pluginName.matches("^(eu.evops.maven.pluins.cucumber.parallel.CustomJSONFormatter|junit)")) {
                 Merger.get(pluginName).merge(getThreadFolder(), findReports(getReportFileName(pluginName)));
             }
         }
@@ -294,16 +294,10 @@ public class Run extends AbstractMojo {
             args.add(CucumberArguments.Plugin.getArg());
 
             // If plugin ends with semicolon, I will generate report name under thread folder
-            if(plugin.endsWith(":")&&!plugin.startsWith("json")) {
-                if(plugin.startsWith("CustomJSONFormatter")){
-                    File threadedReportFile = new File(threadFolder, "reports/" +
-                            getReportFileName("json"));
-                    args.add(format("%s%s", "eu.evops.maven.pluins.cucumber.parallel.CustomJSONFormatter:", threadedReportFile.getAbsolutePath()));
-                }else {
-                    File threadedReportFile = new File(threadFolder, "reports/" +
-                            getReportFileName(plugin.split(":")[0]));
-                    args.add(format("%s%s", plugin, threadedReportFile.getAbsolutePath()));
-                }
+            if(plugin.endsWith(":")) {
+                File threadedReportFile = new File(threadFolder, "reports/" +
+                        getReportFileName(plugin.split(":")[0]));
+                args.add(format("%s%s", plugin, threadedReportFile.getAbsolutePath()));
             }
             else {
                 args.add(plugin.replace("%thread%", String.valueOf(threadNumber)));
@@ -328,6 +322,8 @@ public class Run extends AbstractMojo {
             return "report.xml";
         case "rerun":
             return "rerun.txt";
+        case "eu.evops.maven.pluins.cucumber.parallel.CustomJSONFormatter":
+            return "report.json";
         default:
             return formatterName;
         }
