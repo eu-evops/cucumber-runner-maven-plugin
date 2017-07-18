@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by n450777 on 31/03/2016.
  */
-public class JsonResultMergerTest {
+public class StreamingJsonResultMergerTest {
 
     private JsonResultMerger jsonResultMerger;
 
@@ -29,12 +29,12 @@ public class JsonResultMergerTest {
 
     @Before
     public void setup() throws IOException, MergeException {
-        jsonResultMerger = new JsonResultMerger("combined.json");
+        jsonResultMerger = new JsonResultMerger("streaming-combined.json");
         reports = new ArrayList<>();
 
         for (int i = 1; i <= 3; i++) {
-            URL report = JsonResultMergerTest.class
-                    .getClassLoader().getResource(format("json/report%d.json", i));
+            URL report = StreamingJsonResultMergerTest.class
+                    .getClassLoader().getResource(format("streaming-json/streaming-report%d.json", i));
             reports.add(report.getFile());
         }
 
@@ -52,6 +52,7 @@ public class JsonResultMergerTest {
     public void generatesValidJson()
             throws MergeException, IOException, SAXException {
         String jsonString = FileUtils.readFileToString(outputFile);
+        System.out.println(jsonString);
         JSONArray json = new JSONArray(jsonString);
         assertEquals(5, json.length());
 
@@ -72,7 +73,4 @@ public class JsonResultMergerTest {
         assertEquals(12, testCases.size());
     }
 
-    @Test
-    public void validatesAgainstJunitSchema() throws SAXException, IOException {
-    }
 }

@@ -2,6 +2,7 @@ package eu.evops.maven.pluins.cucumber.parallel;
 
 import eu.evops.maven.pluins.cucumber.parallel.reporting.MergeException;
 import eu.evops.maven.pluins.cucumber.parallel.reporting.Merger;
+import eu.evops.maven.pluins.cucumber.parallel.reporting.formatters.StreamingJSONFormatter;
 import net.masterthought.cucumber.Configuration;
 import net.masterthought.cucumber.ReportBuilder;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -219,7 +220,8 @@ public class Run extends AbstractMojo {
     private void combineReports() throws MergeException, MojoFailureException {
         for (String plugin : plugins) {
             String pluginName = plugin.split(":")[0];
-            if(pluginName.matches("^(eu.evops.maven.pluins.cucumber.parallel.CustomJSONFormatter|junit)")) {
+            System.out.println(pluginName);
+            if(pluginName.matches("(json|junit|eu.evops.maven.pluins.cucumber.parallel.reporting.formatters.StreamingJSONFormatter)")) {
                 Merger.get(pluginName).merge(getThreadFolder(), findReports(getReportFileName(pluginName)));
             }
         }
@@ -249,6 +251,10 @@ public class Run extends AbstractMojo {
         File combinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/combined-html");
         List<String> combinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "combined.json").getAbsolutePath());
         generateReportForJsonFiles(combinedReportOutputDirectory, combinedJsonFiles);
+
+        File streamingCombinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/streaming-combined-html");
+        List<String> streamingCombinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "streaming-combined.json").getAbsolutePath());
+        generateReportForJsonFiles(streamingCombinedReportOutputDirectory, streamingCombinedJsonFiles);
     }
 
     private void generateReportForJsonFiles(File reportOutputDirectory,
@@ -314,16 +320,17 @@ public class Run extends AbstractMojo {
     }
 
     private String getReportFileName(String formatterName) {
-        switch(formatterName) {
-        case "json":
+        String streamingJsonFormatterClassName = StreamingJSONFormatter.class.getName();
+
+        if (formatterName.equals("json")) {
             return "report.json";
-        case "junit":
+        } else if (formatterName.equals("junit")) {
             return "report.xml";
-        case "rerun":
+        } else if (formatterName.equals("rerun")) {
             return "rerun.txt";
-        case "eu.evops.maven.pluins.cucumber.parallel.CustomJSONFormatter":
-            return "report.json";
-        default:
+        } else if (formatterName.equals(streamingJsonFormatterClassName)) {
+            return "streaming-report.json";
+        } else {
             return formatterName;
         }
     }
