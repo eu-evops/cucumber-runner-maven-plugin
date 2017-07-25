@@ -2,6 +2,7 @@ package eu.evops.maven.pluins.cucumber.parallel;
 
 import eu.evops.maven.pluins.cucumber.parallel.reporting.MergeException;
 import eu.evops.maven.pluins.cucumber.parallel.reporting.Merger;
+import eu.evops.maven.pluins.cucumber.parallel.reporting.formatters.StreamingJSONFormatter;
 import net.masterthought.cucumber.Configuration;
 import net.masterthought.cucumber.ReportBuilder;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -18,11 +19,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -110,6 +107,12 @@ public class Run extends AbstractMojo {
      */
     @Parameter(property = "cucumberRunner.threadCount")
     int threadCount;
+
+    /* Streaming Formatter Property value.
+    * Default: true
+    * if false: It uses the deafult Cucumber JSON Formatter*/
+    @Parameter(property = "cucumberRunner.streamingFormatter")
+    boolean streamingFormatter = true;
 
     /**
      * Will use reporter merge facility to comine json and junit reports (only if
@@ -219,7 +222,8 @@ public class Run extends AbstractMojo {
     private void combineReports() throws MergeException, MojoFailureException {
         for (String plugin : plugins) {
             String pluginName = plugin.split(":")[0];
-            if(pluginName.matches("^(json|junit)")) {
+            System.out.println(pluginName);
+            if(pluginName.matches("(json|junit|eu.evops.maven.pluins.cucumber.parallel.reporting.formatters.StreamingJSONFormatter)")) {
                 Merger.get(pluginName).merge(getThreadFolder(), findReports(getReportFileName(pluginName)));
             }
         }
@@ -245,10 +249,16 @@ public class Run extends AbstractMojo {
 
     }
 
-    private void report() throws MojoFailureException {
-        File combinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/combined-html");
-        List<String> combinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "combined.json").getAbsolutePath());
-        generateReportForJsonFiles(combinedReportOutputDirectory, combinedJsonFiles);
+    private void report() throws MojoFailureException, IOException {
+        if(getStreamingFormatterValue()){
+            File streamingCombinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/streaming-combined-html");
+            List<String> streamingCombinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "streaming-combined.json").getAbsolutePath());
+            generateReportForJsonFiles(streamingCombinedReportOutputDirectory, streamingCombinedJsonFiles);
+        }else{
+            File combinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/combined-html");
+            List<String> combinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "combined.json").getAbsolutePath());
+            generateReportForJsonFiles(combinedReportOutputDirectory, combinedJsonFiles);
+        }
     }
 
     private void generateReportForJsonFiles(File reportOutputDirectory,
@@ -314,14 +324,17 @@ public class Run extends AbstractMojo {
     }
 
     private String getReportFileName(String formatterName) {
-        switch(formatterName) {
-        case "json":
+        String streamingJsonFormatterClassName = StreamingJSONFormatter.class.getName();
+
+        if (formatterName.equals("json")) {
             return "report.json";
-        case "junit":
+        } else if (formatterName.equals("junit")) {
             return "report.xml";
-        case "rerun":
+        } else if (formatterName.equals("rerun")) {
             return "rerun.txt";
-        default:
+        } else if (formatterName.equals(streamingJsonFormatterClassName)) {
+            return "streaming-report.json";
+        } else {
             return formatterName;
         }
     }
@@ -359,6 +372,13 @@ public class Run extends AbstractMojo {
         System.setProperty(
                 "cucumber-parallel-execution.threads",
                 String.valueOf(threadCount));
+    }
+
+    /* Returns the streamingFormatter value.
+    * if true, it uses the StreamingJSON Formatter
+    * else it uses the default Cucumber JSON Formatter*/
+    private boolean getStreamingFormatterValue() throws IOException {
+        return streamingFormatter;
     }
 
     private List<String> getCommonArguments() {
