@@ -1,6 +1,6 @@
 Feature: One
 
-  Scenario Outline: Hello world
+  Scenario Outline: Scenario 1
     Given I kill thread if <value> is more than 20
 
     Examples:
@@ -9,5 +9,4 @@ Feature: One
       | 15    |
       | 22    |
       | 30    |
-      | 44    |
-      | 565   |
+

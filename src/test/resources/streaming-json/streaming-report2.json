@@ -3,19 +3,65 @@
     "line": 1,
     "elements": [
       {
-        "line": 9,
-        "name": "Hello world",
+        "line": 10,
+        "name": "Scenario 1",
         "description": "",
-        "id": "one;hello-world;;3",
+        "id": "one;scenario-1;;4",
         "type": "scenario",
         "keyword": "Scenario Outline",
         "steps": [
           {
             "result": {
-              "duration": 143793352,
-              "status": "passed"
+              "duration": 143248122,
+              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:15)\n\tat ✽.Given I kill thread if 22 is more than 20(features/test.feature:4)\n",
+              "status": "failed"
             },
             "line": 4,
+            "name": "I kill thread if 22 is more than 20",
+            "match": {
+              "arguments": [
+                {
+                  "val": "22",
+                  "offset": 17
+                },
+                {
+                  "val": "20",
+                  "offset": 33
+                }
+              ],
+              "location": "TestSteps.iKillThreadIfValueIsMoreThan(int,int)"
+            },
+            "matchedColumns": [
+              0
+            ],
+            "keyword": "Given "
+          }
+        ]
+      }
+    ],
+    "name": "One",
+    "description": "",
+    "id": "one",
+    "keyword": "Feature",
+    "uri": "features/test.feature"
+  },
+  {
+    "line": 1,
+    "elements": [
+      {
+        "line": 17,
+        "name": "Scenario 3",
+        "description": "",
+        "id": "two;scenario-3;;3",
+        "type": "scenario",
+        "keyword": "Scenario Outline",
+        "steps": [
+          {
+            "result": {
+              "duration": 333327,
+              "status": "passed"
+            },
+            "line": 12,
             "name": "I kill thread if 15 is more than 20",
             "match": {
               "arguments": [
@@ -36,32 +82,77 @@
             "keyword": "Given "
           }
         ]
-      },
+      }
+    ],
+    "name": "Two",
+    "description": "",
+    "id": "two",
+    "keyword": "Feature",
+    "uri": "features/test1.feature"
+  },
+  {
+    "line": 1,
+    "elements": [
       {
-        "line": 13,
-        "name": "Hello world",
+        "line": 10,
+        "name": "Scenario 4",
         "description": "",
-        "id": "one;hello-world;;7",
+        "id": "three;scenario-4;;4",
         "type": "scenario",
         "keyword": "Scenario Outline",
         "steps": [
           {
             "result": {
-              "duration": 639473,
-              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:850)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:14)\n\tat ?.Given I kill thread if 565 is more than 20(features/test.feature:4)\n",
-              "status": "failed"
+              "duration": 128258,
+              "status": "passed"
             },
             "line": 4,
-            "name": "I kill thread if 565 is more than 20",
+            "name": "I kill thread if 12 is more than 20",
             "match": {
               "arguments": [
                 {
-                  "val": "565",
+                  "val": "12",
                   "offset": 17
                 },
                 {
                   "val": "20",
-                  "offset": 34
+                  "offset": 33
+                }
+              ],
+              "location": "TestSteps.iKillThreadIfValueIsMoreThan(int,int)"
+            },
+            "matchedColumns": [
+              0
+            ],
+            "keyword": "Given "
+          }
+        ]
+      },
+      {
+        "line": 20,
+        "name": "Scenario 5",
+        "description": "",
+        "id": "three;scenario-5;;5",
+        "type": "scenario",
+        "keyword": "Scenario Outline",
+        "steps": [
+          {
+            "result": {
+              "duration": 319755,
+              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:15)\n\tat ✽.Given I kill thread if 44 is more than 20(features/test2.feature:13)\n",
+              "status": "failed"
+            },
+            "line": 13,
+            "name": "I kill thread if 44 is more than 20",
+            "match": {
+              "arguments": [
+                {
+                  "val": "44",
+                  "offset": 17
+                },
+                {
+                  "val": "20",
+                  "offset": 33
                 }
               ],
               "location": "TestSteps.iKillThreadIfValueIsMoreThan(int,int)"
@@ -74,10 +165,10 @@
         ]
       }
     ],
-    "name": "One",
+    "name": "Three",
     "description": "",
-    "id": "one",
+    "id": "three",
     "keyword": "Feature",
-    "uri": "features/test.feature"
+    "uri": "features/test2.feature"
   }
 ]

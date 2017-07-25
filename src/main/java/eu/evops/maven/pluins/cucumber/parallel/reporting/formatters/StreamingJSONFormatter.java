@@ -1,11 +1,9 @@
 package eu.evops.maven.pluins.cucumber.parallel.reporting.formatters;
 
 import cucumber.runtime.formatter.CucumberJSONFormatter;
-import cucumber.runtime.io.UTF8OutputStreamWriter;
 import gherkin.deps.com.google.gson.Gson;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.JSONFormatter;
-import gherkin.formatter.NiceAppendable;
 import gherkin.formatter.Reporter;
 import gherkin.formatter.model.*;
 import org.apache.commons.io.FileUtils;
@@ -15,7 +13,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -106,12 +103,9 @@ public class StreamingJSONFormatter implements Formatter, Reporter {
         done();
     }
 
-
-
     @Override
     public void done() {
         String json = getGson().toJson(getFeatureMaps());
-
         try {
             FileUtils.write(file, json);
         } catch (IOException e) {
