@@ -26,7 +26,9 @@ import static org.junit.Assert.assertEquals;
  */
 public class StreamingJSONFormatterTest {
 
-    private String pomPath = String.format("%s/test-project/pom.xml", new File(".").getAbsoluteFile().getParent());
+    private File testProjectDirectory = new File(".", "test-project").getAbsoluteFile();
+    private File pomFile = new File(testProjectDirectory, "pom.xml");
+
     private JsonResultMerger jsonResultMerger;
     private List<String> reports;
     private File outputFile;
@@ -59,16 +61,13 @@ public class StreamingJSONFormatterTest {
     }
 
     public void executeTests() throws IOException, InterruptedException {
-        File testProjectTargetFolder= new File(String.format("%s/test-project/target", new File(".").getAbsoluteFile().getParent()));
-        FileUtils.deleteDirectory(testProjectTargetFolder);
-
         ProcessBuilder processBuilder = new ProcessBuilder();
+
+        processBuilder.directory(testProjectDirectory);
         processBuilder.command("mvn",
                 "clean",
                 "integration-test",
-                "-DuseEnhancedJsonReporting=true",
-                "-f",
-                pomPath);
+                "-DuseEnhancedJsonReporting=true");
 
         Process start = processBuilder.start();
         start.waitFor();
@@ -76,7 +75,7 @@ public class StreamingJSONFormatterTest {
 
     public int getThreadCount() throws JDOMException, IOException, XmlPullParserException {
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new FileReader(pomPath));
+        Model model = reader.read(new FileReader(pomFile));
 
         ArrayList<Plugin> pluginsList = (ArrayList<Plugin>) model.getBuild().getPlugins();
         Optional<Plugin> pluginsList1 = pluginsList.stream().filter(it-> it.getArtifactId().contains("cucumber-runner-maven-plugin")).findFirst();
@@ -90,7 +89,7 @@ public class StreamingJSONFormatterTest {
         reports = new ArrayList<>();
 
         for (int i = 0; i < getThreadCount(); i++) {
-            File reportFile = new File(String.format("%s/test-project/target/cucumber/threads/thread-%d/reports/report.json", new File(".").getAbsoluteFile().getParent(),i));
+            File reportFile = new File(String.format("%s/target/cucumber/threads/thread-%d/reports/report.json", testProjectDirectory, i));
             reports.add(reportFile.getPath());
         }
 

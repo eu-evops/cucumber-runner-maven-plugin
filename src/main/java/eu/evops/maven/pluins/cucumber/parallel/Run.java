@@ -316,7 +316,7 @@ public class Run extends AbstractMojo {
                 String pluginName = pluginDetails[0];
 
                 // if streaming enabled
-                if(enhancedJsonReporting) {
+                if(pluginName.equalsIgnoreCase("json") && enhancedJsonReporting) {
                     pluginName = streamingFormatterClassName;
                 }
 
