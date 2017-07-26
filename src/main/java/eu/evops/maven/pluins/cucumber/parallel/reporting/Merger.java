@@ -5,8 +5,8 @@ package eu.evops.maven.pluins.cucumber.parallel.reporting;
  */
 public enum Merger {
     Junit(new JunitResultMerger()),
-    Json(new JsonResultMerger()),
-    StreamingJSONFormatter(new JsonResultMerger());
+    Json(new JsonResultMerger("combined.json")),
+    StreamingJsonFormatter(new JsonResultMerger("streaming-combined.json"));
 
     private ResultMerger merger;
     Merger(ResultMerger merger) {
@@ -23,7 +23,7 @@ public enum Merger {
                 return m.getMerger();
             }
             if(merger.contains("StreamingJSONFormatter")){
-                return StreamingJSONFormatter.getMerger();
+                return StreamingJsonFormatter.getMerger();
             }
         }
         throw new MergeException("Could not find result merger for " + merger.toString());
