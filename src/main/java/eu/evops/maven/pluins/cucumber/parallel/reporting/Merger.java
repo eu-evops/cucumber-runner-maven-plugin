@@ -6,7 +6,7 @@ package eu.evops.maven.pluins.cucumber.parallel.reporting;
 public enum Merger {
     Junit(new JunitResultMerger()),
     Json(new JsonResultMerger("combined.json")),
-    StreamingJsonFormatter(new JsonResultMerger("streaming-combined.json"));
+    StreamingJsonFormatter(new JsonResultMerger("combined.json"));
 
     private ResultMerger merger;
     Merger(ResultMerger merger) {

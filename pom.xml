@@ -91,7 +91,7 @@
                     </gluePaths>
                     <plugins>
                         <plugin>html:</plugin>
-                        <plugin>eu.evops.maven.pluins.cucumber.parallel.CustomJSONFormatter:</plugin>
+                        <plugin>json:</plugin>
                         <plugin>junit:</plugin>
                         <plugin>pretty</plugin>
                     </plugins>

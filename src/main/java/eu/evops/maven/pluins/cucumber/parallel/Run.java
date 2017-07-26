@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 
@@ -95,6 +96,15 @@ public class Run extends AbstractMojo {
     @Parameter(property = "cucumberRunner.dryRun")
     boolean dryRun = false;
 
+
+    /**
+     * With enhanced json reporting, reports are generated after each scenario
+     * and saved to disk, this ensures that in case of a Java crash, you get
+     * reports for executed tests
+     */
+    @Parameter(property = "cucumberRunner.enhancedJsonReporting")
+    boolean enhancedJsonReporting = false;
+
     /**
      * Don't colour terminal output.
      */
@@ -120,6 +130,7 @@ public class Run extends AbstractMojo {
     boolean combineReports;
 
     private File threadFolder;
+    private String streamingFormatterClassName = StreamingJSONFormatter.class.getName();
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         setThreadCount();
@@ -220,8 +231,8 @@ public class Run extends AbstractMojo {
     private void combineReports() throws MergeException, MojoFailureException {
         for (String plugin : plugins) {
             String pluginName = plugin.split(":")[0];
-            System.out.println(pluginName);
-            if(pluginName.matches("(json|junit|eu.evops.maven.pluins.cucumber.parallel.reporting.formatters.StreamingJSONFormatter)")) {
+
+            if(pluginName.matches(String.format("(json|junit|%s)", streamingFormatterClassName))) {
                 Merger.get(pluginName).merge(getThreadFolder(), findReports(getReportFileName(pluginName)));
             }
         }
@@ -251,10 +262,6 @@ public class Run extends AbstractMojo {
         File combinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/combined-html");
         List<String> combinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "combined.json").getAbsolutePath());
         generateReportForJsonFiles(combinedReportOutputDirectory, combinedJsonFiles);
-
-        File streamingCombinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/streaming-combined-html");
-        List<String> streamingCombinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "streaming-combined.json").getAbsolutePath());
-        generateReportForJsonFiles(streamingCombinedReportOutputDirectory, streamingCombinedJsonFiles);
     }
 
     private void generateReportForJsonFiles(File reportOutputDirectory,
@@ -296,13 +303,27 @@ public class Run extends AbstractMojo {
             args.add(CucumberArguments.Strict.getArg());
         }
 
+        // check if json and streaming json are present
+        if(plugins.contains("json:") && plugins.contains(streamingFormatterClassName + ":")) {
+            throw new RuntimeException("Cannot use json and streaming json formatters together");
+        }
+
         for (String plugin : plugins) {
             args.add(CucumberArguments.Plugin.getArg());
 
             // If plugin ends with semicolon, I will generate report name under thread folder
             if(plugin.endsWith(":")) {
+                String[] pluginDetails = plugin.split(":");
+                String pluginName = pluginDetails[0];
+
+                // if streaming enabled
+                if(enhancedJsonReporting) {
+                    pluginName = streamingFormatterClassName;
+                }
+
                 File threadedReportFile = new File(threadFolder, "reports/" +
-                        getReportFileName(plugin.split(":")[0]));
+                        getReportFileName(pluginName));
+
                 args.add(format("%s%s", plugin, threadedReportFile.getAbsolutePath()));
             } else {
                 args.add(plugin.replace("%thread%", String.valueOf(threadNumber)));
@@ -322,14 +343,12 @@ public class Run extends AbstractMojo {
     private String getReportFileName(String formatterName) {
         String streamingJsonFormatterClassName = StreamingJSONFormatter.class.getName();
 
-        if (formatterName.equals("json")) {
+        if (formatterName.equals("json") || formatterName.equals(streamingJsonFormatterClassName)) {
             return "report.json";
         } else if (formatterName.equals("junit")) {
             return "report.xml";
         } else if (formatterName.equals("rerun")) {
             return "rerun.txt";
-        } else if (formatterName.equals(streamingJsonFormatterClassName)) {
-            return "streaming-report.json";
         } else {
             return formatterName;
         }
