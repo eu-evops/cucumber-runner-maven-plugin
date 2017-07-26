@@ -323,7 +323,7 @@ public class Run extends AbstractMojo {
                 File threadedReportFile = new File(threadFolder, "reports/" +
                         getReportFileName(pluginName));
 
-                args.add(format("%s%s", plugin, threadedReportFile.getAbsolutePath()));
+                args.add(format("%s:%s", pluginName, threadedReportFile.getAbsolutePath()));
             } else {
                 args.add(plugin.replace("%thread%", String.valueOf(threadNumber)));
             }
