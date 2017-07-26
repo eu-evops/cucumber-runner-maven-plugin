@@ -15,12 +15,10 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -36,7 +34,6 @@ public class StreamingJSONFormatterTest {
     @Before
     public void setup() throws IOException, InterruptedException, XmlPullParserException, JDOMException, MergeException {
         executeTests();
-        createTestData();
         mergeJSONs();
     }
 
@@ -66,10 +63,12 @@ public class StreamingJSONFormatterTest {
         FileUtils.deleteDirectory(testProjectTargetFolder);
 
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("mvn", "clean", "integration-test", "-f", pomPath);
-
-        processBuilder.redirectError(new File("/tmp/mytest.err.log"));
-        processBuilder.redirectOutput(new File("/tmp/mytest.out.log"));
+        processBuilder.command("mvn",
+                "clean",
+                "integration-test",
+                "-DuseEnhancedJsonReporting=true",
+                "-f",
+                pomPath);
 
         Process start = processBuilder.start();
         start.waitFor();
@@ -86,28 +85,13 @@ public class StreamingJSONFormatterTest {
         return Integer.parseInt(xpp.getChild("threadCount").getValue());
     }
 
-    public void createTestData() throws IOException, XmlPullParserException, JDOMException {
-
-        File streamingJSONTestDataPath = new File(String.format("%s/src/test/resources/streaming-json", new File(".").getAbsoluteFile().getParent()));
-        FileUtils.cleanDirectory(streamingJSONTestDataPath);
-        int threadCount = getThreadCount();
-
-        /* Copies the streaming-report.json created for each Thread to resource/streaming-json folder to create test data*/
-        for (int i = 0; i < threadCount; i++) {
-            File srcFile = new File(String.format("%s/test-project/target/cucumber/threads/thread-%d/reports/streaming-report.json", new File(".").getAbsoluteFile().getParent(),i));
-            File destFile = new File(String.format("%s/src/test/resources/streaming-json/streaming-report%d.json", new File(".").getAbsoluteFile().getParent(),i));
-            FileUtils.copyFile(srcFile,destFile);
-        }
-    }
-
     public void mergeJSONs() throws MergeException, JDOMException, XmlPullParserException, IOException {
-        jsonResultMerger = new JsonResultMerger("streaming-combined.json");
+        jsonResultMerger = new JsonResultMerger("combined.json");
         reports = new ArrayList<>();
 
         for (int i = 0; i < getThreadCount(); i++) {
-            URL report = StreamingJSONFormatterTest.class
-                    .getClassLoader().getResource(format("streaming-json/streaming-report%d.json", i));
-            reports.add(report.getFile());
+            File reportFile = new File(String.format("%s/test-project/target/cucumber/threads/thread-%d/reports/report.json", new File(".").getAbsoluteFile().getParent(),i));
+            reports.add(reportFile.getPath());
         }
 
         File outputFolder = FileUtils.getTempDirectory();

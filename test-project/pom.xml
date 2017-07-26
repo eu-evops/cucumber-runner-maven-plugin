@@ -9,6 +9,10 @@
     <groupId>pom-test-group</groupId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <useEnhancedJsonReporting>false</useEnhancedJsonReporting>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -28,6 +32,7 @@
                     <features>
                         <feature>src/test/resources</feature>
                     </features>
+                    <enhancedJsonReporting>${useEnhancedJsonReporting}</enhancedJsonReporting>
                     <gluePaths>
                         <gluePath>steps</gluePath>
                     </gluePaths>

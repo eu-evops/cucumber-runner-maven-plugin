@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
 
@@ -121,12 +120,6 @@ public class Run extends AbstractMojo {
      */
     @Parameter(property = "cucumberRunner.threadCount")
     int threadCount;
-
-    /* Streaming Formatter Property value.
-    * Default: true
-    * if false: It uses the deafult Cucumber JSON Formatter*/
-    @Parameter(property = "cucumberRunner.streamingFormatter")
-    boolean streamingFormatter = true;
 
     /**
      * Will use reporter merge facility to comine json and junit reports (only if
@@ -265,12 +258,9 @@ public class Run extends AbstractMojo {
     }
 
     private void report() throws MojoFailureException, IOException {
-        if(getStreamingFormatterValue()){
-        }else{
-            File combinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/combined-html");
-            List<String> combinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "combined.json").getAbsolutePath());
-            generateReportForJsonFiles(combinedReportOutputDirectory, combinedJsonFiles);
-        }
+        File combinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/combined-html");
+        List<String> combinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "combined.json").getAbsolutePath());
+        generateReportForJsonFiles(combinedReportOutputDirectory, combinedJsonFiles);
     }
 
     private void generateReportForJsonFiles(File reportOutputDirectory,
@@ -396,13 +386,6 @@ public class Run extends AbstractMojo {
         System.setProperty(
                 "cucumber-parallel-execution.threads",
                 String.valueOf(threadCount));
-    }
-
-    /* Returns the streamingFormatter value.
-    * if true, it uses the StreamingJSON Formatter
-    * else it uses the default Cucumber JSON Formatter*/
-    private boolean getStreamingFormatterValue() throws IOException {
-        return streamingFormatter;
     }
 
     private List<String> getCommonArguments() {
