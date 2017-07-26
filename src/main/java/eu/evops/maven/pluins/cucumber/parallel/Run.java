@@ -222,7 +222,6 @@ public class Run extends AbstractMojo {
     private void combineReports() throws MergeException, MojoFailureException {
         for (String plugin : plugins) {
             String pluginName = plugin.split(":")[0];
-            System.out.println(pluginName);
             if(pluginName.matches("(json|junit|eu.evops.maven.pluins.cucumber.parallel.reporting.formatters.StreamingJSONFormatter)")) {
                 Merger.get(pluginName).merge(getThreadFolder(), findReports(getReportFileName(pluginName)));
             }

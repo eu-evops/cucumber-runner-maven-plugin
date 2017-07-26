@@ -12,7 +12,7 @@
         "steps": [
           {
             "result": {
-              "duration": 155796627,
+              "duration": 143671775,
               "status": "passed"
             },
             "line": 4,
@@ -57,7 +57,7 @@
         "steps": [
           {
             "result": {
-              "duration": 156808,
+              "duration": 210416,
               "status": "passed"
             },
             "line": 4,
@@ -102,8 +102,8 @@
         "steps": [
           {
             "result": {
-              "duration": 7586738,
-              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:15)\n\tat ✽.Given I kill thread if 75 is more than 20(features/test2.feature:4)\n",
+              "duration": 1117738,
+              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:14)\n\tat ✽.Given I kill thread if 75 is more than 20(features/test2.feature:4)\n",
               "status": "failed"
             },
             "line": 4,
@@ -138,7 +138,7 @@
         "steps": [
           {
             "result": {
-              "duration": 155396,
+              "duration": 172323,
               "status": "passed"
             },
             "line": 13,

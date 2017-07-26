@@ -12,8 +12,8 @@
         "steps": [
           {
             "result": {
-              "duration": 176125287,
-              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:15)\n\tat ✽.Given I kill thread if 30 is more than 20(features/test.feature:4)\n",
+              "duration": 143804335,
+              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:14)\n\tat ✽.Given I kill thread if 30 is more than 20(features/test.feature:4)\n",
               "status": "failed"
             },
             "line": 4,
@@ -58,8 +58,8 @@
         "steps": [
           {
             "result": {
-              "duration": 870967,
-              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:15)\n\tat ✽.Given I kill thread if 65 is more than 20(features/test2.feature:13)\n",
+              "duration": 692111,
+              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:14)\n\tat ✽.Given I kill thread if 65 is more than 20(features/test2.feature:13)\n",
               "status": "failed"
             },
             "line": 13,
@@ -94,8 +94,8 @@
         "steps": [
           {
             "result": {
-              "duration": 3243438,
-              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:15)\n\tat ✽.Given I kill thread if 10000 is more than 20(features/test2.feature:13)\n",
+              "duration": 304771,
+              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:14)\n\tat ✽.Given I kill thread if 10000 is more than 20(features/test2.feature:13)\n",
               "status": "failed"
             },
             "line": 13,

@@ -12,7 +12,7 @@
         "steps": [
           {
             "result": {
-              "duration": 136462308,
+              "duration": 110891581,
               "status": "passed"
             },
             "line": 4,
@@ -48,7 +48,7 @@
     "line": 1,
     "elements": [
       {
-        "line": 16,
+        "line": 15,
         "name": "Scenario 3",
         "description": "",
         "id": "two;scenario-3;;2",
@@ -57,10 +57,10 @@
         "steps": [
           {
             "result": {
-              "duration": 146489,
+              "duration": 153476,
               "status": "passed"
             },
-            "line": 12,
+            "line": 11,
             "name": "I kill thread if 10 is more than 20",
             "match": {
               "arguments": [
@@ -102,7 +102,7 @@
         "steps": [
           {
             "result": {
-              "duration": 131664,
+              "duration": 127342,
               "status": "passed"
             },
             "line": 4,
@@ -137,8 +137,8 @@
         "steps": [
           {
             "result": {
-              "duration": 627470,
-              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:15)\n\tat ✽.Given I kill thread if 120 is more than 20(features/test2.feature:13)\n",
+              "duration": 715124,
+              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:14)\n\tat ✽.Given I kill thread if 120 is more than 20(features/test2.feature:13)\n",
               "status": "failed"
             },
             "line": 13,

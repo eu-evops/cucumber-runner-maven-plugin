@@ -12,8 +12,8 @@
         "steps": [
           {
             "result": {
-              "duration": 143248122,
-              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:15)\n\tat ✽.Given I kill thread if 22 is more than 20(features/test.feature:4)\n",
+              "duration": 117547812,
+              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:14)\n\tat ✽.Given I kill thread if 22 is more than 20(features/test.feature:4)\n",
               "status": "failed"
             },
             "line": 4,
@@ -49,7 +49,7 @@
     "line": 1,
     "elements": [
       {
-        "line": 17,
+        "line": 16,
         "name": "Scenario 3",
         "description": "",
         "id": "two;scenario-3;;3",
@@ -58,10 +58,10 @@
         "steps": [
           {
             "result": {
-              "duration": 333327,
+              "duration": 210278,
               "status": "passed"
             },
-            "line": 12,
+            "line": 11,
             "name": "I kill thread if 15 is more than 20",
             "match": {
               "arguments": [
@@ -103,7 +103,7 @@
         "steps": [
           {
             "result": {
-              "duration": 128258,
+              "duration": 133781,
               "status": "passed"
             },
             "line": 4,
@@ -138,8 +138,8 @@
         "steps": [
           {
             "result": {
-              "duration": 319755,
-              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:15)\n\tat ✽.Given I kill thread if 44 is more than 20(features/test2.feature:13)\n",
+              "duration": 929541,
+              "error_message": "java.lang.ThreadDeath\n\tat java.lang.Thread.stop(Thread.java:853)\n\tat steps.TestSteps.iKillThreadIfValueIsMoreThan(TestSteps.java:14)\n\tat ✽.Given I kill thread if 44 is more than 20(features/test2.feature:13)\n",
               "status": "failed"
             },
             "line": 13,
