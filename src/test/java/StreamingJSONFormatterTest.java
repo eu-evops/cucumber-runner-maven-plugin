@@ -29,7 +29,6 @@ public class StreamingJSONFormatterTest {
 
     private File testProjectDirectory = new File(".", "test-project").getAbsoluteFile();
     private File pomFile = new File(testProjectDirectory, "pom.xml");
-
     private JsonResultMerger jsonResultMerger;
     private List<String> reports;
     private File outputFile;
@@ -126,7 +125,6 @@ public class StreamingJSONFormatterTest {
             File reportFile = new File(String.format("%s/target/cucumber/threads/thread-%d/reports/report.json", testProjectDirectory, i));
             reports.add(reportFile.getPath());
         }
-
         File outputFolder = FileUtils.getTempDirectory();
         outputFile = jsonResultMerger.merge(outputFolder, reports);
         outputFile.deleteOnExit();

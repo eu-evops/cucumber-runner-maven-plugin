@@ -230,7 +230,6 @@ public class Run extends AbstractMojo {
     private void combineReports() throws MergeException, MojoFailureException {
         for (String plugin : plugins) {
             String pluginName = plugin.split(":")[0];
-
             if(pluginName.matches(String.format("(json|junit|%s)", streamingFormatterClassName))) {
                 Merger.get(pluginName).merge(getThreadFolder(), findReports(getReportFileName(pluginName)));
             }
@@ -257,7 +256,7 @@ public class Run extends AbstractMojo {
 
     }
 
-    private void report() throws MojoFailureException, IOException {
+    private void report() throws MojoFailureException {
         File combinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/combined-html");
         List<String> combinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "combined.json").getAbsolutePath());
         generateReportForJsonFiles(combinedReportOutputDirectory, combinedJsonFiles);
@@ -322,7 +321,6 @@ public class Run extends AbstractMojo {
 
                 File threadedReportFile = new File(threadFolder, "reports/" +
                         getReportFileName(pluginName));
-
                 args.add(format("%s:%s", pluginName, threadedReportFile.getAbsolutePath()));
             } else {
                 args.add(plugin.replace("%thread%", String.valueOf(threadNumber)));
@@ -341,7 +339,6 @@ public class Run extends AbstractMojo {
 
     private String getReportFileName(String formatterName) {
         String streamingJsonFormatterClassName = StreamingJSONFormatter.class.getName();
-
         if (formatterName.equals("json") || formatterName.equals(streamingJsonFormatterClassName)) {
             return "report.json";
         } else if (formatterName.equals("junit")) {

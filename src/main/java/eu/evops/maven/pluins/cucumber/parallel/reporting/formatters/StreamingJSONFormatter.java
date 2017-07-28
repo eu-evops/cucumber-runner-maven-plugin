@@ -81,7 +81,6 @@ public class StreamingJSONFormatter implements Formatter, Reporter {
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -93,7 +92,6 @@ public class StreamingJSONFormatter implements Formatter, Reporter {
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
