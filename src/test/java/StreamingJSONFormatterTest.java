@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by n471306 on 19/07/2017.
@@ -58,6 +59,39 @@ public class StreamingJSONFormatterTest {
             }
         }
         assertEquals("Report generated does not have data of 15 test cases. Streaming JSON results merger failed",15, testCases.size());
+    }
+
+    @Test
+    public void validateCucumberReportsOnForcefullyKillingThreads() throws IOException, InterruptedException, NoSuchFieldException, IllegalAccessException {
+        File combinedJSONFile = new File(String.format("%s/target/cucumber/threads/combined.json", testProjectDirectory));
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.directory(testProjectDirectory);
+        processBuilder.command("mvn", "clean", "integration-test","-DcucumberRunner.features=src/test/resources-1");
+
+        Process start = processBuilder.start();
+        start.waitFor();
+
+        String cucumberPath = String.format("%s/test-project/target/cucumber/combined-html/cucumber-html-reports",
+                new File("").getAbsolutePath());
+        File cucumberHtmlReports = new File(cucumberPath);
+        assertTrue("Combined Html Reports are not generated when process running threads are forcefully killed",
+                cucumberHtmlReports.exists());
+
+        String jsonString = FileUtils.readFileToString(combinedJSONFile,"UTF-8");
+        JSONArray json = new JSONArray(jsonString);
+        List<JSONObject> testCases = new ArrayList<>();
+
+        for (Object o : json) {
+            if(!(o instanceof JSONObject))
+                throw new IllegalArgumentException();
+
+            JSONObject jsonObject = (JSONObject) o;
+            JSONArray elements = jsonObject.getJSONArray("elements");
+            for (Object testCase : elements) {
+                testCases.add((JSONObject) testCase);
+            }
+        }
+        assertEquals("Report generated does not have data of 2 test cases. Streaming JSON results merger failed",2, testCases.size());
     }
 
     public void executeTests() throws IOException, InterruptedException {

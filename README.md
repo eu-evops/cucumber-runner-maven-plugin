@@ -36,3 +36,4 @@ You can also specify other cucumber related configurations, a list of them is be
 | monochrome | ```boolean``` | Don't colour output | true |
 | strict | ```boolean``` | When set to true, it will fail scenarios if undefined steps are found | true |
 | threadCount | ```int``` | Number of process to start | Number of available CPU cores on the system |
+| enhancedJsonReporting| ```boolean``` | When set to true, reports are generated after each scenario and saved to disk and reports are updated| false |
