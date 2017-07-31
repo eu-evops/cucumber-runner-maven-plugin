@@ -9,7 +9,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jdom2.JDOMException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -17,8 +16,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -27,20 +24,21 @@ import static org.junit.Assert.assertTrue;
  */
 public class StreamingJSONFormatterTest {
 
-    private File testProjectDirectory = new File(".", "test-project").getAbsoluteFile();
-    private File pomFile = new File(testProjectDirectory, "pom.xml");
-    private JsonResultMerger jsonResultMerger;
-    private List<String> reports;
-    private File outputFile;
+    public File testProjectDirectory = new File(".", "test-project").getAbsoluteFile();
+    public File pomFile = new File(testProjectDirectory, "pom.xml");
+    public JsonResultMerger jsonResultMerger;
+    public List<String> reports;
+    public File outputFile;
 
-    @Before
     public void setup() throws IOException, InterruptedException, XmlPullParserException, JDOMException, MergeException {
         executeTests();
         mergeJSONs();
     }
 
     @Test
-    public void testReportsGeneratedUsingStreamingJSONFormatter() throws IOException {
+    public void testReportsGeneratedUsingStreamingJSONFormatter() throws IOException, InterruptedException, XmlPullParserException, JDOMException, MergeException {
+        setup();
+
         String jsonString = FileUtils.readFileToString(outputFile,"UTF-8");
         JSONArray json = new JSONArray(jsonString);
         assertEquals("The report generated does not contain 3 feature files",3, json.length());
@@ -107,14 +105,18 @@ public class StreamingJSONFormatterTest {
     }
 
     public int getThreadCount() throws JDOMException, IOException, XmlPullParserException {
+        int threadCount=0;
         MavenXpp3Reader reader = new MavenXpp3Reader();
         Model model = reader.read(new FileReader(pomFile));
 
         ArrayList<Plugin> pluginsList = (ArrayList<Plugin>) model.getBuild().getPlugins();
-        Optional<Plugin> pluginsList1 = pluginsList.stream().filter(it-> it.getArtifactId().contains("cucumber-runner-maven-plugin")).findFirst();
-
-        Xpp3Dom xpp = (Xpp3Dom) pluginsList1.get().getConfiguration();
-        return Integer.parseInt(xpp.getChild("threadCount").getValue());
+        for (Plugin plugin: pluginsList) {
+            if(plugin.getArtifactId().equals("cucumber-runner-maven-plugin")){
+                Xpp3Dom xpp = (Xpp3Dom) plugin.getConfiguration();
+                threadCount= Integer.parseInt(xpp.getChild("threadCount").getValue());
+            }
+        }
+        return threadCount;
     }
 
     public void mergeJSONs() throws MergeException, JDOMException, XmlPullParserException, IOException {
