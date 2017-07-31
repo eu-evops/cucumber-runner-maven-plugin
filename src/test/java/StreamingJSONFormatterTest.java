@@ -1,4 +1,3 @@
-import cucumber.api.java.Before;
 import eu.evops.maven.pluins.cucumber.parallel.reporting.JsonResultMerger;
 import eu.evops.maven.pluins.cucumber.parallel.reporting.MergeException;
 import org.apache.commons.io.FileUtils;
@@ -17,6 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -64,7 +64,11 @@ public class StreamingJSONFormatterTest {
         File combinedJSONFile = new File(String.format("%s/target/cucumber/threads/combined.json", testProjectDirectory));
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectDirectory);
-        processBuilder.command("mvn", "clean", "integration-test","-DcucumberRunner.features=src/test/resources-1");
+        processBuilder.command("mvn",
+                "integration-test",
+                "-DcucumberRunner.features=src/test/resources-1",
+                "-DuseEnhancedJsonReporting=true"
+        );
 
         Process start = processBuilder.start();
         start.waitFor();
@@ -97,7 +101,6 @@ public class StreamingJSONFormatterTest {
 
         processBuilder.directory(testProjectDirectory);
         processBuilder.command("mvn",
-                "clean",
                 "integration-test",
                 "-DuseEnhancedJsonReporting=true");
 

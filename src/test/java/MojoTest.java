@@ -15,7 +15,7 @@ public class MojoTest {
     public void  testStreamingCombinedHtmlFolderIsGeneratedWhenAThreadIsStopped() throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectDirectory);
-        processBuilder.command("mvn", "clean", "integration-test", "-DuseEnhancedJsonReporting=true");
+        processBuilder.command("mvn", "integration-test", "-DuseEnhancedJsonReporting=true");
 
         Process start = processBuilder.start();
         start.waitFor();
@@ -29,7 +29,7 @@ public class MojoTest {
     public void testCombinedHtmlFolderIsGeneratedWhenAThreadIsStopped() throws IOException, InterruptedException, NoSuchFieldException, IllegalAccessException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectDirectory);
-        processBuilder.command("mvn", "clean", "integration-test");
+        processBuilder.command("mvn", "integration-test");
 
         Process start = processBuilder.start();
         start.waitFor();
