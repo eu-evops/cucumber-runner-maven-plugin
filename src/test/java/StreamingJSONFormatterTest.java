@@ -31,16 +31,6 @@ public class StreamingJSONFormatterTest {
     public List<String> reports;
     public File outputFile;
 
-    @Before
-    public void buildProjectBySkippingTestCases() throws IOException, InterruptedException {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.directory(new File(".").getAbsoluteFile());
-        processBuilder.command("mvn", "clean", "install","-DskipTests");
-
-        Process start = processBuilder.start();
-        start.waitFor();
-    }
-
     public void setup() throws IOException, InterruptedException, XmlPullParserException, JDOMException, MergeException {
         executeTests();
         mergeJSONs();
