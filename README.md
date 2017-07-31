@@ -1,4 +1,4 @@
-# cucumber-runner-maven-plugin
+# cucumber-runner-maven-plugin ![https://travis-ci.org/eu-evops/cucumber-runner-maven-plugin.svg?branch=master](https://travis-ci.org/eu-evops/cucumber-runner-maven-plugin.svg?branch=master)
 
 Maven plugin for running cucumber features in parallel using cucumber's Main class. To use it, add it to your pom file as a build plugin:
 
