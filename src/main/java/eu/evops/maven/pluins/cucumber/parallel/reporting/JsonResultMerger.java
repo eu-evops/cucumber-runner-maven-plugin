@@ -15,9 +15,15 @@ import java.util.List;
  * Created by n450777 on 30/03/2016.
  */
 public class JsonResultMerger implements ResultMerger {
+    private String outputFileName;
+
+    public JsonResultMerger(String outputFileName) {
+        this.outputFileName = outputFileName;
+    }
+
     @Override
     public File merge(File outputFolder, List<String> paths) throws MergeException {
-        File outputFile = new File(outputFolder, "combined.json");
+        File outputFile = new File(outputFolder, outputFileName);
         JSONArray combined = new JSONArray();
         String contents = "";
         for (String jsonFile : paths) {

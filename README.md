@@ -1,4 +1,4 @@
-# cucumber-runner-maven-plugin
+# cucumber-runner-maven-plugin ![https://travis-ci.org/eu-evops/cucumber-runner-maven-plugin.svg?branch=master](https://travis-ci.org/eu-evops/cucumber-runner-maven-plugin.svg?branch=master)
 
 Maven plugin for running cucumber features in parallel using cucumber's Main class. To use it, add it to your pom file as a build plugin:
 
@@ -36,3 +36,14 @@ You can also specify other cucumber related configurations, a list of them is be
 | monochrome | ```boolean``` | Don't colour output | true |
 | strict | ```boolean``` | When set to true, it will fail scenarios if undefined steps are found | true |
 | threadCount | ```int``` | Number of process to start | Number of available CPU cores on the system |
+| enhancedJsonReporting| ```boolean``` | When set to true, reports are generated after each scenario and saved to disk and reports are updated| false |
+
+# Development
+
+In order to run unit tests, you need to first install local package by executing:
+
+```
+mvn install -DskipTests
+```
+
+This deploys local version of the plugin to your ~/.m2/repository folder, and integration tests use it to validate the plugin. This is already handled during CI builds.

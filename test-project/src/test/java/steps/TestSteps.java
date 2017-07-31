@@ -14,4 +14,14 @@ public class TestSteps {
             Thread.currentThread().stop();
         }
     }
+
+    @Given("^I Forcefully kill thread if (\\d+) is more than (\\d+)$")
+    public void iForcefullyKillThreadIfValueIsMoreThan(int currentValue, int threshold) throws Throwable {
+        if(currentValue > threshold) {
+            String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+            String processID = processName.split("@")[0];
+            System.out.println("Forcefully Killing this thread");
+            Runtime.getRuntime().exec("kill "+ processID);
+        }
+    }
 }

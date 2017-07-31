@@ -29,7 +29,7 @@ public class JsonResultMergerTest {
 
     @Before
     public void setup() throws IOException, MergeException {
-        jsonResultMerger = new JsonResultMerger();
+        jsonResultMerger = new JsonResultMerger("combined.json");
         reports = new ArrayList<>();
 
         for (int i = 1; i <= 3; i++) {
