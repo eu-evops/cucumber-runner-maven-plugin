@@ -47,3 +47,12 @@ mvn install -DskipTests
 ```
 
 This deploys local version of the plugin to your ~/.m2/repository folder, and integration tests use it to validate the plugin. This is already handled during CI builds.
+
+# Release
+
+In order to release the plugin, you need to have credentials for ossrh and your settings.xml updated accordingly. Once this is in place, you can execute following commands:
+
+```
+mvn versions:set
+mvn clean deploy
+```
