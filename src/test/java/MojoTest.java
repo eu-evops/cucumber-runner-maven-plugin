@@ -1,8 +1,12 @@
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import static java.nio.file.Files.readAllBytes;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -10,6 +14,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class MojoTest {
     File testProjectDirectory = new File(".", "test-project").getAbsoluteFile();
+    File testProjectWithJvmArgs = new File(".", "test-project-jvm-args").getAbsoluteFile();
 
     @Test
     public void  testStreamingCombinedHtmlFolderIsGeneratedWhenAThreadIsStopped() throws IOException, InterruptedException {
@@ -26,6 +31,27 @@ public class MojoTest {
     }
 
     @Test
+    public void testThatJvmArgsArePassed() throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.directory(testProjectWithJvmArgs);
+        processBuilder.command("mvn", "integration-test");
+        ProcessBuilder.Redirect pipe = ProcessBuilder.Redirect.PIPE;
+        processBuilder.redirectOutput(pipe);
+
+        Process process = processBuilder.start();
+        process.waitFor();
+
+
+        String errOutPath = String.format("%s/test-project-jvm-args/target/cucumber/threads/generator-stderr.log",
+                new File("").getAbsolutePath());
+
+        Path path = Paths.get(errOutPath);
+        String errOutput = new String(readAllBytes(path));
+
+        Assert.assertTrue("Output should contain 'java version'", errOutput.contains("java version"));
+    }
+
+    @Test
     public void testCombinedHtmlFolderIsGeneratedWhenAThreadIsStopped() throws IOException, InterruptedException, NoSuchFieldException, IllegalAccessException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectDirectory);
@@ -34,7 +60,6 @@ public class MojoTest {
         Process start = processBuilder.start();
         start.waitFor();
 
-        System.out.print("Validate Combined-html folder");
         String cucumberPath = String.format("%s/test-project/target/cucumber/combined-html/cucumber-html-reports",
                 new File("").getAbsolutePath());
         File cucumberHtmlReports = new File(cucumberPath);
