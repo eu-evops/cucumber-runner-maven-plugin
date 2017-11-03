@@ -20,27 +20,6 @@
     <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-inject-bean:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-guice:noaop:2.1.7" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.maven.plugin-tools:maven-plugin-annotations:3.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.maven:maven-core:3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.maven:maven-settings:3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.maven:maven-settings-builder:3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.maven:maven-repository-metadata:3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.maven:maven-model-builder:3.0" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.maven:maven-aether-provider:3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.sonatype.aether:aether-impl:1.7" level="project" />
-    <orderEntry type="library" name="Maven: org.sonatype.aether:aether-spi:1.7" level="project" />
-    <orderEntry type="library" name="Maven: org.sonatype.aether:aether-api:1.7" level="project" />
-    <orderEntry type="library" name="Maven: org.sonatype.aether:aether-util:1.7" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-interpolation:1.14" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:2.0.4" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-classworlds:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-component-annotations:1.5.5" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.maven:maven-plugin-api:3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.maven:maven-model:3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.maven:maven-artifact:3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-inject-plexus:1.4.2" level="project" />
-    <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-inject-bean:1.4.2" level="project" />
-    <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-guice:noaop:2.1.7" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.maven.plugin-tools:maven-plugin-annotations:3.2" level="project" />
     <orderEntry type="library" name="Maven: info.cukes:cucumber-java:1.2.4" level="project" />
     <orderEntry type="library" name="Maven: info.cukes:cucumber-core:1.2.4" level="project" />
     <orderEntry type="library" name="Maven: info.cukes:cucumber-html:0.2.3" level="project" />
