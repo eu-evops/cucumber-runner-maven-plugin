@@ -37,6 +37,7 @@ You can also specify other cucumber related configurations, a list of them is be
 | strict | ```boolean``` | When set to true, it will fail scenarios if undefined steps are found | true |
 | threadCount | ```int``` | Number of process to start | Number of available CPU cores on the system |
 | enhancedJsonReporting| ```boolean``` | When set to true, reports are generated after each scenario and saved to disk and reports are updated| false |
+| jvmArgs | ```String``` | JVM arguments that will be passed to cucumber process | empty string |
 
 # Development
 
