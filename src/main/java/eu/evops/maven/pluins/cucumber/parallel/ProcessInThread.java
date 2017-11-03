@@ -28,13 +28,16 @@ public class ProcessInThread extends Thread {
 
     private File stderr;
 
+    private String jvmArgs;
     private String workingDirectory;
 
 
     public ProcessInThread(List<String> arguments,
+            String jvmArgs,
             List<String> classpath,
             Properties properties,
             String workingDirectory) {
+        this.jvmArgs = jvmArgs;
         this.workingDirectory = workingDirectory;
         this.command = arguments;
         this.properties = properties;
@@ -74,8 +77,15 @@ public class ProcessInThread extends Thread {
         classpathString = stringBuilder.toString();
 
         ProcessBuilder builder = new ProcessBuilder(
-                javaBin, "-cp", classpathString);
+                javaBin);
         builder.directory(new File(workingDirectory));
+
+        if(!jvmArgs.equalsIgnoreCase("")) {
+            builder.command().add(jvmArgs);
+        }
+
+        builder.command().add("-cp");
+        builder.command().add(classpathString);
 
         Properties properties = this.properties;
         properties.putAll(System.getProperties());

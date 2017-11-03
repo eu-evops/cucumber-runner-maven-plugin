@@ -60,6 +60,18 @@ public class Run extends AbstractMojo {
     private List<String> excludeTags = Arrays.asList();
 
     /**
+     * JVM Arguments that will be passed to executing JVM
+     */
+    @Parameter(property = "cucumberRunner.jvmArgs")
+    private String jvmArgs = "";
+
+    /**
+     * How many times to rerun failing tests
+     */
+    @Parameter(property = "cucumberRunner.rerunFailedTests")
+    private int rerunFailedTests = 0;
+
+    /**
      * List of glue
      */
     @Parameter(property = "cucumberRunner.gluePaths")
@@ -327,6 +339,11 @@ public class Run extends AbstractMojo {
             }
         }
 
+        if(rerunFailedTests > 0) {
+            args.add(CucumberArguments.Plugin.getArg());
+            args.add(format("rerun:%s", new File(threadFolder, "rerun.txt").getAbsolutePath()));
+        }
+
         for (String gluePath : gluePaths) {
             args.add(CucumberArguments.Glue.getArg());
             args.add(gluePath);
@@ -396,7 +413,7 @@ public class Run extends AbstractMojo {
 
     private ProcessInThread createProcess(List<String> arguments, List<String> classpath, Properties properties) {
         String workingDirectory = project.getBasedir().getAbsolutePath();
-        return new ProcessInThread(arguments, classpath, properties, workingDirectory);
+        return new ProcessInThread(arguments, jvmArgs, classpath, properties, workingDirectory);
     }
 
     public List<String> getThreadGeneratorArguments(File threadFolder) {
