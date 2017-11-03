@@ -81,7 +81,10 @@ public class ProcessInThread extends Thread {
         builder.directory(new File(workingDirectory));
 
         if(!jvmArgs.equalsIgnoreCase("")) {
-            builder.command().add(jvmArgs);
+            for (String jvmArg : jvmArgs.split("\\s+")) {
+                System.out.println("Adding argument: " + jvmArg);
+                builder.command().add(jvmArg);
+            }
         }
 
         builder.command().add("-cp");

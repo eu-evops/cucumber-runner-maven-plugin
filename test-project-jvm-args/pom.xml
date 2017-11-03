@@ -18,7 +18,7 @@
             <plugin>
                 <groupId>eu.evops.maven.plugins</groupId>
                 <artifactId>cucumber-runner-maven-plugin</artifactId>
-                <version>1.9-SNAPSHOT</version>
+                <version>1.12-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>integration</id>
@@ -29,7 +29,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmArgs>-version</jvmArgs>
+                    <jvmArgs>-version -Dverify:none</jvmArgs>
                     <features>
                         <feature>src/test/resources</feature>
                     </features>
