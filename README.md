@@ -43,8 +43,8 @@ You can also specify other cucumber related configurations, a list of them is be
 
 During test execution following properties are available for you to use:
 
-- System property: cucumberRunner.threadNumber
-- Environment variable: THREAD_NUMBER
+- System property: ```cucumberRunner.threadNumber```, ```cucumberRunner.threadCount```
+- Environment variables: ```THREAD_NUMBER```, ```THREAD_COUNT```
 
 Both of the above indicate 0-based thread number. Typical usage is to set up individual database
 per thread so that you don't have clashes.
