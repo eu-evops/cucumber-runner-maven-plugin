@@ -22,7 +22,7 @@ public class MojoTest {
     public void testStreamingCombinedHtmlFolderIsGeneratedWhenAThreadIsStopped() throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectDirectory);
-        processBuilder.command("mvn", "integration-test", "-DuseEnhancedJsonReporting=true");
+        processBuilder.command("mvn", "clean", "integration-test", "-DuseEnhancedJsonReporting=true");
 
         Process start = processBuilder.start();
         start.waitFor();
@@ -36,14 +36,15 @@ public class MojoTest {
     public void testThreadNumberPropertyAndEnvironmentVariableIsPassed() throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectDirectory);
-        processBuilder.command("mvn", "integration-test");
+        processBuilder.command("mvn", "clean", "integration-test");
         ProcessBuilder.Redirect pipe = ProcessBuilder.Redirect.PIPE;
         processBuilder.redirectOutput(pipe);
 
         Process process = processBuilder.start();
         process.waitFor();
 
-        for (int i = 0; i < 4; i++) {
+        int threadCount = 4;
+        for (int i = 0; i < threadCount; i++) {
             String errOutPath = String.format("%s/test-project/target/cucumber/threads/thread-%d/stderr.log",
                     new File("").getAbsolutePath(), i);
 
@@ -51,7 +52,9 @@ public class MojoTest {
             String errOutput = new String(readAllBytes(path));
 
             Assert.assertThat(errOutput, containsString(String.format("System property: thread number: %d", i)));
+            Assert.assertThat(errOutput, containsString(String.format("System property: thread count: %d", threadCount)));
             Assert.assertThat(errOutput, containsString(String.format("Environment variable: thread number: %d", i)));
+            Assert.assertThat(errOutput, containsString(String.format("Environment variable: thread count: %d", threadCount)));
         }
 
     }
@@ -61,7 +64,7 @@ public class MojoTest {
     public void testThatJvmArgsArePassed() throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectWithJvmArgs);
-        processBuilder.command("mvn", "integration-test");
+        processBuilder.command("mvn", "clean", "integration-test");
         ProcessBuilder.Redirect pipe = ProcessBuilder.Redirect.PIPE;
         processBuilder.redirectOutput(pipe);
 
@@ -81,7 +84,7 @@ public class MojoTest {
     public void testCombinedHtmlFolderIsGeneratedWhenAThreadIsStopped() throws IOException, InterruptedException, NoSuchFieldException, IllegalAccessException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectDirectory);
-        processBuilder.command("mvn", "integration-test");
+        processBuilder.command("mvn", "clean", "integration-test");
 
         Process start = processBuilder.start();
         start.waitFor();

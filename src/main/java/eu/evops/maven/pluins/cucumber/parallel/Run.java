@@ -424,7 +424,9 @@ public class Run extends AbstractMojo {
         if(threadNumber > -1) {
             getLog().info(String.format("Setting thread number to: %d", threadNumber));
             properties.put("cucumberRunner.threadNumber", String.valueOf(threadNumber));
+            properties.put("cucumberRunner.threadCount", String.valueOf(threadCount));
             environmentVariables.put("THREAD_NUMBER", String.valueOf(threadNumber));
+            environmentVariables.put("THREAD_COUNT", String.valueOf(threadCount));
         }
 
         return new ProcessInThread(arguments, jvmArgs, classpath, properties, environmentVariables, workingDirectory);
