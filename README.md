@@ -39,6 +39,16 @@ You can also specify other cucumber related configurations, a list of them is be
 | enhancedJsonReporting| ```boolean``` | When set to true, reports are generated after each scenario and saved to disk and reports are updated| false |
 | jvmArgs | ```String``` | JVM arguments that will be passed to cucumber process | empty string |
 
+# Test execution
+
+During test execution following properties are available for you to use:
+
+- System property: cucumberRunner.threadNumber
+- Environment variable: THREAD_NUMBER
+
+Both of the above indicate 0-based thread number. Typical usage is to set up individual database
+per thread so that you don't have clashes.
+
 # Development
 
 In order to run unit tests, you need to first install local package by executing:

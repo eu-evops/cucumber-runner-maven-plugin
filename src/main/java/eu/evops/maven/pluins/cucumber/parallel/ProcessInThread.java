@@ -6,6 +6,7 @@ import org.apache.maven.plugin.logging.SystemStreamLog;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -29,15 +30,18 @@ public class ProcessInThread extends Thread {
     private File stderr;
 
     private String jvmArgs;
+    private HashMap<String, String> environmentVariables;
     private String workingDirectory;
 
 
-    public ProcessInThread(List<String> arguments,
-            String jvmArgs,
-            List<String> classpath,
-            Properties properties,
-            String workingDirectory) {
+    ProcessInThread(List<String> arguments,
+                    String jvmArgs,
+                    List<String> classpath,
+                    Properties properties,
+                    HashMap<String, String> environmentVariables,
+                    String workingDirectory) {
         this.jvmArgs = jvmArgs;
+        this.environmentVariables = environmentVariables;
         this.workingDirectory = workingDirectory;
         this.command = arguments;
         this.properties = properties;
@@ -80,6 +84,9 @@ public class ProcessInThread extends Thread {
                 javaBin);
         builder.directory(new File(workingDirectory));
 
+        // Add environment variables to the process
+        builder.environment().putAll(environmentVariables);
+
         if(!jvmArgs.equalsIgnoreCase("")) {
             for (String jvmArg : jvmArgs.split("\\s+")) {
                 System.out.println("Adding argument: " + jvmArg);
@@ -121,10 +128,8 @@ public class ProcessInThread extends Thread {
         try {
             process = builder.start();
             status = process.waitFor();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             //
-        } catch (InterruptedException e) {
-            // e.printStackTrace();
         }
     }
 
@@ -132,11 +137,11 @@ public class ProcessInThread extends Thread {
         return status;
     }
 
-    public void setStdout(File stdout) {
+    void setStdout(File stdout) {
         this.stdout = stdout;
     }
 
-    public void setStderr(File stderr) {
+    void setStderr(File stderr) {
         this.stderr = stderr;
     }
 

@@ -20,7 +20,8 @@ import org.codehaus.plexus.util.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -45,19 +46,19 @@ public class Run extends AbstractMojo {
      * Where are the feature files, by default src/test/resources
      */
     @Parameter(property = "cucumberRunner.features")
-    private List<String> features = Arrays.asList("src/test/resources");
+    private List<String> features = Collections.singletonList("src/test/resources");
 
     /**
      * Only execute scenarios with these tags
      */
     @Parameter(property = "cucumberRunner.includeTags")
-    private List<String> includeTags = Arrays.asList();
+    private List<String> includeTags = Collections.emptyList();
 
     /**
      * Exclude these tags from running, for instance @wip, @manual
      */
     @Parameter(property = "cucumberRunner.excludeTags")
-    private List<String> excludeTags = Arrays.asList();
+    private List<String> excludeTags = Collections.emptyList();
 
     /**
      * JVM Arguments that will be passed to executing JVM
@@ -151,14 +152,16 @@ public class Run extends AbstractMojo {
         List<String> threadedArgs = getThreadGeneratorArguments(getThreadFolder());
 
         try {
-            getLog().debug(format("Generating thread files", threadedArgs));
+            getLog().debug("Generating thread files");
 
             List<String> classpath = project
                     .getTestClasspathElements();
             classpath.addAll(getPluginDependencies());
 
             // generates thread files
-            ProcessInThread main = createProcess(threadedArgs, classpath, project.getProperties());
+            Properties threadGeneratorProperties = new Properties();
+            threadGeneratorProperties.putAll(project.getProperties());
+            ProcessInThread main = createProcess(threadedArgs, classpath, threadGeneratorProperties);
             main.setLog(getLog());
             main.setStderr(new File(getThreadFolder(), "generator-stderr.log"));
             main.setStdout(new File(getThreadFolder(), "generator-stdout.log"));
@@ -193,7 +196,9 @@ public class Run extends AbstractMojo {
                 File stderr = new File(format("%s/thread-%d/stderr.log",
                         getThreadFolder().getAbsolutePath(), i));
 
-                ProcessInThread thread = createProcess(threadArguments, classpath, project.getProperties());
+                Properties threadProperties = new Properties();
+                threadProperties.putAll(project.getProperties());
+                ProcessInThread thread = createProcess(threadArguments, classpath, threadProperties, i);
                 thread.setLog(getLog());
                 thread.setStdout(stdout);
                 thread.setStderr(stderr);
@@ -239,6 +244,10 @@ public class Run extends AbstractMojo {
         }
     }
 
+    private ProcessInThread createProcess(List<String> arguments, List<String> classpath, Properties properties) {
+        return createProcess(arguments, classpath, properties, -1);
+    }
+
     private void combineReports() throws MergeException, MojoFailureException {
         for (String plugin : plugins) {
             String pluginName = plugin.split(":")[0];
@@ -270,7 +279,7 @@ public class Run extends AbstractMojo {
 
     private void report() throws MojoFailureException {
         File combinedReportOutputDirectory = new File(project.getBuild().getDirectory(), "cucumber/combined-html");
-        List<String> combinedJsonFiles = Arrays.asList(new File(getThreadFolder(), "combined.json").getAbsolutePath());
+        List<String> combinedJsonFiles = Collections.singletonList(new File(getThreadFolder(), "combined.json").getAbsolutePath());
         generateReportForJsonFiles(combinedReportOutputDirectory, combinedJsonFiles);
     }
 
@@ -279,14 +288,11 @@ public class Run extends AbstractMojo {
         String jenkinsBasePath = "";
         String buildNumber = "1";
         String projectName = project.getName();
-        boolean runWithJenkins = false;
-        boolean parallelTesting = false;
-
 
         Configuration configuration = new Configuration(reportOutputDirectory, projectName);
-        configuration.setParallelTesting(parallelTesting);
+        configuration.setParallelTesting(false);
         configuration.setJenkinsBasePath(jenkinsBasePath);
-        configuration.setRunWithJenkins(runWithJenkins);
+        configuration.setRunWithJenkins(false);
         configuration.setBuildNumber(buildNumber);
 
         ReportBuilder reportBuilder = new ReportBuilder(jsonFiles, configuration);
@@ -411,12 +417,20 @@ public class Run extends AbstractMojo {
         return arguments;
     }
 
-    private ProcessInThread createProcess(List<String> arguments, List<String> classpath, Properties properties) {
+    private ProcessInThread createProcess(List<String> arguments, List<String> classpath, Properties properties, int threadNumber) {
         String workingDirectory = project.getBasedir().getAbsolutePath();
-        return new ProcessInThread(arguments, jvmArgs, classpath, properties, workingDirectory);
+
+        HashMap<String, String> environmentVariables = new HashMap<>();
+        if(threadNumber > -1) {
+            getLog().info(String.format("Setting thread number to: %d", threadNumber));
+            properties.put("cucumberRunner.threadNumber", String.valueOf(threadNumber));
+            environmentVariables.put("THREAD_NUMBER", String.valueOf(threadNumber));
+        }
+
+        return new ProcessInThread(arguments, jvmArgs, classpath, properties, environmentVariables, workingDirectory);
     }
 
-    public List<String> getThreadGeneratorArguments(File threadFolder) {
+    private List<String> getThreadGeneratorArguments(File threadFolder) {
         List<String> args = getCommonArguments();
         args.add(CucumberArguments.DryRun.getArg());
 
@@ -446,9 +460,7 @@ public class Run extends AbstractMojo {
             args.add(tag);
         }
 
-        for (String feature : features) {
-            args.add(feature);
-        }
+        args.addAll(features);
 
         for (String scenarioName : scenarioNames) {
             args.add(CucumberArguments.ScenarioName.getArg());
@@ -462,7 +474,7 @@ public class Run extends AbstractMojo {
         return feature.startsWith("classpath:") || feature.startsWith("@");
     }
 
-    public List<String> getFeatureFolders() {
+    private List<String> getFeatureFolders() {
         List<String> result = new ArrayList<>();
 
         for (String feature : features) {

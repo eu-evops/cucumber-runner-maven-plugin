@@ -8,6 +8,8 @@ import cucumber.api.java.en.Given;
 public class TestSteps {
     @Given("^I kill thread if (\\d+) is more than (\\d+)$")
     public void iKillThreadIfValueIsMoreThan(int currentValue, int threshold) throws Throwable {
+        System.err.printf("System property: thread number: %s%n", System.getProperty("cucumberRunner.threadNumber"));
+        System.err.printf("Environment variable: thread number: %s%n", System.getenv("THREAD_NUMBER"));
         // Write code here that turns the phrase above into concrete actions
         if(currentValue > threshold) {
             System.out.println("Killing this thread");
