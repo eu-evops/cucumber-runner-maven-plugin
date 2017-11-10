@@ -1,4 +1,4 @@
-package eu.evops.maven.pluins.cucumber.parallel;
+package eu.evops.maven.plugins.cucumber.parallel;
 
 import gherkin.formatter.model.Background;
 import gherkin.formatter.model.Examples;
@@ -27,7 +27,7 @@ public class Formatter implements gherkin.formatter.Formatter {
 
     private final File destination;
 
-    private final Map<String, List<Integer>> featuresAndLineNumbers = new HashMap<String, List<Integer>>();
+    private final Map<String, List<Integer>> featuresAndLineNumbers = new HashMap<>();
 
     private List<Integer> currentFeature;
 
@@ -89,7 +89,7 @@ public class Formatter implements gherkin.formatter.Formatter {
 
     @Override
     public void done() {
-        List<HashMap<String, List<Integer>>> threadedGroups = new ArrayList<HashMap<String, List<Integer>>>();
+        List<HashMap<String, List<Integer>>> threadedGroups = new ArrayList<>();
         Set<Map.Entry<String, List<Integer>>> entries = featuresAndLineNumbers
                 .entrySet();
 
@@ -108,13 +108,13 @@ public class Formatter implements gherkin.formatter.Formatter {
 
                 if (threadedGroups.size() < threadGroupIndex + 1) {
                     threadedGroups
-                            .add(new HashMap<String, List<Integer>>());
+                            .add(new HashMap<>());
                 }
                 HashMap<String, List<Integer>> threadGroup = threadedGroups
                         .get(threadGroupIndex);
 
                 if (!threadGroup.containsKey(feature)) {
-                    threadGroup.put(feature, new ArrayList<Integer>());
+                    threadGroup.put(feature, new ArrayList<>());
                 }
 
                 threadGroup.get(feature).add(lineNumber);

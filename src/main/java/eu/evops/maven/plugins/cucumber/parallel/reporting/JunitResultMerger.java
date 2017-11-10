@@ -1,4 +1,4 @@
-package eu.evops.maven.pluins.cucumber.parallel.reporting;
+package eu.evops.maven.plugins.cucumber.parallel.reporting;
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;

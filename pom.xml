@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>eu.evops.maven.plugins</groupId>
    <artifactId>cucumber-runner-maven-plugin</artifactId>
-   <version>1.15-SNAPSHOT</version>
+   <version>1.15</version>
    <packaging>maven-plugin</packaging>
    <description>Maven plugin for running cucumber features in parallel using cucumber's Main class. To use it, add it to your pom file as a build plugin</description>
    <url>https://github.com/eu-evops/cucumber-runner-maven-plugin</url>
@@ -50,8 +50,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.3</version>
             <configuration>
-               <source>1.7</source>
-               <target>1.7</target>
+               <source>1.8</source>
+               <target>1.8</target>
             </configuration>
          </plugin>
          <plugin>

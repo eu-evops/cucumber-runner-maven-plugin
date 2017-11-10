@@ -1,4 +1,4 @@
-package eu.evops.maven.pluins.cucumber.parallel.reporting;
+package eu.evops.maven.plugins.cucumber.parallel.reporting;
 
 /**
  * Created by n450777 on 30/03/2016.
@@ -26,6 +26,6 @@ public enum Merger {
                 return StreamingJsonFormatter.getMerger();
             }
         }
-        throw new MergeException("Could not find result merger for " + merger.toString());
+        throw new MergeException(String.format("Could not find result merger for %s", merger));
     }
 }

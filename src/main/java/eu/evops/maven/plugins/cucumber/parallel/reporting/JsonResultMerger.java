@@ -1,4 +1,4 @@
-package eu.evops.maven.pluins.cucumber.parallel.reporting;
+package eu.evops.maven.plugins.cucumber.parallel.reporting;
 
 import org.codehaus.plexus.util.FileUtils;
 import org.json.JSONArray;

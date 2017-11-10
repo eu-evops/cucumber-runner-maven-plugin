@@ -1,18 +1,27 @@
-package eu.evops.maven.pluins.cucumber.parallel.reporting.formatters;
+package eu.evops.maven.plugins.cucumber.parallel.reporting.formatters;
 
 import cucumber.runtime.formatter.CucumberJSONFormatter;
 import gherkin.deps.com.google.gson.Gson;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.JSONFormatter;
 import gherkin.formatter.Reporter;
-import gherkin.formatter.model.*;
-import org.apache.commons.io.FileUtils;
+import gherkin.formatter.model.Background;
+import gherkin.formatter.model.Examples;
+import gherkin.formatter.model.Feature;
+import gherkin.formatter.model.Match;
+import gherkin.formatter.model.Result;
+import gherkin.formatter.model.Scenario;
+import gherkin.formatter.model.ScenarioOutline;
+import gherkin.formatter.model.Step;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -73,9 +82,9 @@ public class StreamingJSONFormatter implements Formatter, Reporter {
         this.jsonFormatter.step(step);
     }
 
-    Gson getGson() {
+    private Gson getGson() {
         try {
-            Method gsonMethod = JSONFormatter.class.getDeclaredMethod("gson", new Class[0]);
+            Method gsonMethod = JSONFormatter.class.getDeclaredMethod("gson");
             gsonMethod.setAccessible(true);
             return (Gson) gsonMethod.invoke(this.jsonFormatter);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -84,7 +93,7 @@ public class StreamingJSONFormatter implements Formatter, Reporter {
         return null;
     }
 
-    List<Map<String, Object>> getFeatureMaps() {
+    private List<Map<String, Object>> getFeatureMaps() {
         try {
             Field field = JSONFormatter.class.getDeclaredField("featureMaps");
             field.setAccessible(true);
@@ -105,7 +114,8 @@ public class StreamingJSONFormatter implements Formatter, Reporter {
     public void done() {
         String json = getGson().toJson(getFeatureMaps());
         try {
-            FileUtils.write(file, json);
+            Path filePath = Paths.get(file.getAbsolutePath());
+            Files.write(filePath, json.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

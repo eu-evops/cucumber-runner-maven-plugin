@@ -1,4 +1,4 @@
-package eu.evops.maven.pluins.cucumber.parallel;
+package eu.evops.maven.plugins.cucumber.parallel;
 
 import cucumber.api.cli.Main;
 import org.apache.maven.plugin.logging.Log;
@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Created by n450777 on 29/03/2016.
@@ -22,6 +24,7 @@ public class ProcessInThread extends Thread {
     private Properties properties;
 
     private List<String> classpath;
+    private int threadTimeout;
 
     private int status;
 
@@ -33,19 +36,22 @@ public class ProcessInThread extends Thread {
     private HashMap<String, String> environmentVariables;
     private String workingDirectory;
 
+    private Consumer<ProcessInThread> finishCallback;
 
     ProcessInThread(List<String> arguments,
                     String jvmArgs,
                     List<String> classpath,
                     Properties properties,
                     HashMap<String, String> environmentVariables,
-                    String workingDirectory) {
+                    String workingDirectory,
+                    int threadTimeout) {
         this.jvmArgs = jvmArgs;
         this.environmentVariables = environmentVariables;
         this.workingDirectory = workingDirectory;
         this.command = arguments;
         this.properties = properties;
         this.classpath = classpath;
+        this.threadTimeout = threadTimeout;
         this.status = -1;
     }
 
@@ -89,7 +95,6 @@ public class ProcessInThread extends Thread {
 
         if(!jvmArgs.equalsIgnoreCase("")) {
             for (String jvmArg : jvmArgs.split("\\s+")) {
-                System.out.println("Adding argument: " + jvmArg);
                 builder.command().add(jvmArg);
             }
         }
@@ -127,10 +132,26 @@ public class ProcessInThread extends Thread {
         Process process;
         try {
             process = builder.start();
-            status = process.waitFor();
+            if(process.waitFor(threadTimeout, TimeUnit.MINUTES)) {
+                status = process.exitValue();
+            } else {
+                // Process timed out, terminate and set error code to 2
+                this.log.error("Cucumber process timed out, terminating...");
+                process.destroy();
+                status = 2;
+            }
         } catch (IOException | InterruptedException e) {
-            //
+            this.log.error("Error running thread");
+            status = 1;
+        } finally {
+            if(this.finishCallback != null) {
+                this.finishCallback.accept(this);
+            }
         }
+    }
+
+    void onFinish(Consumer<ProcessInThread> predicate) {
+        this.finishCallback = predicate;
     }
 
     public int getStatus() {

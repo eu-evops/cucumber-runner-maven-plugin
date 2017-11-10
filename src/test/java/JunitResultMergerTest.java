@@ -1,6 +1,6 @@
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import eu.evops.maven.pluins.cucumber.parallel.reporting.JunitResultMerger;
-import eu.evops.maven.pluins.cucumber.parallel.reporting.MergeException;
+import eu.evops.maven.plugins.cucumber.parallel.reporting.JunitResultMerger;
+import eu.evops.maven.plugins.cucumber.parallel.reporting.MergeException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +52,7 @@ public class JunitResultMergerTest {
 
     @Test
     public void canGenerateCombinedReport() throws IOException, MergeException {
-        FileUtils.readFileToString(outputFile);
+        Files.readAllLines(Paths.get(outputFile.getAbsolutePath()));
     }
 
     @Test

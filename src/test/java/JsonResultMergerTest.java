@@ -1,5 +1,5 @@
-import eu.evops.maven.pluins.cucumber.parallel.reporting.JsonResultMerger;
-import eu.evops.maven.pluins.cucumber.parallel.reporting.MergeException;
+import eu.evops.maven.plugins.cucumber.parallel.reporting.JsonResultMerger;
+import eu.evops.maven.plugins.cucumber.parallel.reporting.MergeException;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,6 +10,8 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,13 +47,14 @@ public class JsonResultMergerTest {
 
     @Test
     public void canGenerateCombinedReport() throws IOException, MergeException {
-        FileUtils.readFileToString(outputFile);
+        Files.readAllLines(Paths.get(outputFile.getAbsolutePath()));
     }
 
     @Test
     public void generatesValidJson()
             throws MergeException, IOException, SAXException {
-        String jsonString = FileUtils.readFileToString(outputFile);
+        List<String> lines = Files.readAllLines(Paths.get(outputFile.getAbsolutePath()));
+        String jsonString = String.join("\n", lines);
         JSONArray json = new JSONArray(jsonString);
         assertEquals(5, json.length());
 

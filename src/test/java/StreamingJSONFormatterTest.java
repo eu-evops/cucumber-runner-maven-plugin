@@ -1,5 +1,5 @@
-import eu.evops.maven.pluins.cucumber.parallel.reporting.JsonResultMerger;
-import eu.evops.maven.pluins.cucumber.parallel.reporting.MergeException;
+import eu.evops.maven.plugins.cucumber.parallel.reporting.JsonResultMerger;
+import eu.evops.maven.plugins.cucumber.parallel.reporting.MergeException;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
@@ -25,13 +25,13 @@ import static org.junit.Assert.assertTrue;
  */
 public class StreamingJSONFormatterTest {
 
-    public File testProjectDirectory = new File(".", "test-project").getAbsoluteFile();
-    public File pomFile = new File(testProjectDirectory, "pom.xml");
-    public JsonResultMerger jsonResultMerger;
-    public List<String> reports;
-    public File outputFile;
+    private File testProjectDirectory = new File(".", "test-project").getAbsoluteFile();
+    private File pomFile = new File(testProjectDirectory, "pom.xml");
+    private JsonResultMerger jsonResultMerger;
+    private List<String> reports;
+    private File outputFile;
 
-    public void setup() throws IOException, InterruptedException, XmlPullParserException, JDOMException, MergeException {
+    private void setup() throws IOException, InterruptedException, XmlPullParserException, JDOMException, MergeException {
         executeTests();
         mergeJSONs();
     }
@@ -96,7 +96,7 @@ public class StreamingJSONFormatterTest {
         assertEquals("Report generated does not have data of 2 test cases. Streaming JSON results merger failed",2, testCases.size());
     }
 
-    public void executeTests() throws IOException, InterruptedException {
+    private void executeTests() throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder();
 
         processBuilder.directory(testProjectDirectory);
@@ -108,7 +108,7 @@ public class StreamingJSONFormatterTest {
         start.waitFor();
     }
 
-    public int getThreadCount() throws JDOMException, IOException, XmlPullParserException {
+    private int getThreadCount() throws JDOMException, IOException, XmlPullParserException {
         int threadCount=0;
         MavenXpp3Reader reader = new MavenXpp3Reader();
         Model model = reader.read(new FileReader(pomFile));
@@ -123,7 +123,7 @@ public class StreamingJSONFormatterTest {
         return threadCount;
     }
 
-    public void mergeJSONs() throws MergeException, JDOMException, XmlPullParserException, IOException {
+    private void mergeJSONs() throws MergeException, JDOMException, XmlPullParserException, IOException {
         jsonResultMerger = new JsonResultMerger("combined.json");
         reports = new ArrayList<>();
 

@@ -1,8 +1,8 @@
-package eu.evops.maven.pluins.cucumber.parallel;
+package eu.evops.maven.plugins.cucumber.parallel;
 
-import eu.evops.maven.pluins.cucumber.parallel.reporting.MergeException;
-import eu.evops.maven.pluins.cucumber.parallel.reporting.Merger;
-import eu.evops.maven.pluins.cucumber.parallel.reporting.formatters.StreamingJSONFormatter;
+import eu.evops.maven.plugins.cucumber.parallel.reporting.MergeException;
+import eu.evops.maven.plugins.cucumber.parallel.reporting.Merger;
+import eu.evops.maven.plugins.cucumber.parallel.reporting.formatters.StreamingJSONFormatter;
 import net.masterthought.cucumber.Configuration;
 import net.masterthought.cucumber.ReportBuilder;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -40,7 +40,7 @@ public class Run extends AbstractMojo {
     @Parameter( readonly = true, defaultValue = "${plugin.artifacts}" )
     private List<Artifact> pluginDependencies;
 
-    @Parameter(property = "cucumberRunner.outputFolder")
+    @Parameter(property = "cucumberRunner.outputFolder", defaultValue = "${project.build.directory}/cucumber")
     private File outputFolder;
     /**
      * Where are the feature files, by default src/test/resources
@@ -182,6 +182,7 @@ public class Run extends AbstractMojo {
 
             List<ProcessInThread> threads = new ArrayList<>();
             for (int i = 0; i < threadCount; i++) {
+                int threadId = i;
                 File threadFolder = getThreadFolder(getThreadFolder(), i);
                 if(!threadFolder.exists()) {
                     getLog().warn(format(
@@ -203,25 +204,29 @@ public class Run extends AbstractMojo {
                 thread.setStdout(stdout);
                 thread.setStderr(stderr);
 
-                thread.start();
                 threads.add(thread);
+
+                thread.onFinish(t -> {
+                    String status = t.getStatus() == 0 ? "passed" : "failed";
+                    getLog().info(format("- Thread %d/%d has finished with status: %s",
+                            threadId + 1, threadCount, status));
+                });
+
+                thread.start();
             }
 
-            getLog().info(format("Running cucumber with %d threads, each thread will run up to 1 hour", threads.size()));
+            getLog().info("Cucumber execution configuration:");
+            getLog().info(format("- Features:          %s", String.join(", ", this.features)));
+            getLog().info(format("- Included tags:     %s", String.join(", ", this.includeTags)));
+            getLog().info(format("- Excluded tags:     %s", String.join(", ", this.excludeTags)));
+            getLog().info(format("- Thread timeout:    %d minutes", this.threadTimeout));
+            getLog().info(format("- Number of threads: %d", this.threadCount));
+            getLog().info(format("- Report folder:     %s", this.outputFolder.getAbsolutePath()));
+            getLog().info("========================================================================");
+            getLog().info(format("Running cucumber with %d threads, each thread will run up to 1 hour ...", threads.size()));
 
-            for (ProcessInThread thread : threads) {
-                thread.join(threadTimeout * 60 * 1000);
-                getLog().debug(format("Thread %s finished", thread));
-            }
-
-            getLog().info("Thread status:");
-            boolean passing = true;
-            for (ProcessInThread thread : threads) {
-                String status = thread.getStatus() == 0 ? "passed" : "failed";
-                getLog().info(format("   Status for %s: %s", thread, status));
-                if(thread.getStatus() != 0) {
-                    passing = false;
-                }
+            while (hasRunningThreads(threads)) {
+                Thread.sleep(1000);
             }
 
             if(combineReports) {
@@ -230,7 +235,7 @@ public class Run extends AbstractMojo {
                 report();
             }
 
-            if(!passing) {
+            if(!haveAllThreadsPassed(threads)) {
                 throw new MojoFailureException(format("Some of the threads have failed, please inspect output folder: %s", getThreadFolder().getAbsolutePath()));
             }
         }
@@ -297,6 +302,24 @@ public class Run extends AbstractMojo {
 
         ReportBuilder reportBuilder = new ReportBuilder(jsonFiles, configuration);
         reportBuilder.generateReports();
+
+        getLog().info(format("Cucumber HTML report has been generated at: %s/cucumber-html-reports/overview-features.html", reportOutputDirectory.getAbsolutePath()));
+    }
+
+    private boolean hasRunningThreads(List<ProcessInThread> threads) {
+        return threads
+                .stream()
+                .filter(Thread::isAlive)
+                .toArray()
+                .length > 0;
+    }
+
+    private boolean haveAllThreadsPassed(List<ProcessInThread> threads) {
+        return threads
+                .stream()
+                .filter(t -> t.getStatus() != 0)
+                .toArray()
+                .length == 0;
     }
 
     private List<String> getPluginDependencies() {
@@ -393,7 +416,13 @@ public class Run extends AbstractMojo {
                     .getAbsolutePath()), e);
         }
 
-        threadFolder.mkdirs();
+        if(!threadFolder.mkdirs()) {
+            throw new MojoFailureException(
+                    format("Could not create thread folder at: %s", threadFolder
+                            .getAbsolutePath()));
+
+        }
+
         return threadFolder;
     }
 
@@ -422,14 +451,14 @@ public class Run extends AbstractMojo {
 
         HashMap<String, String> environmentVariables = new HashMap<>();
         if(threadNumber > -1) {
-            getLog().info(String.format("Setting thread number to: %d", threadNumber));
             properties.put("cucumberRunner.threadNumber", String.valueOf(threadNumber));
             properties.put("cucumberRunner.threadCount", String.valueOf(threadCount));
             environmentVariables.put("THREAD_NUMBER", String.valueOf(threadNumber));
             environmentVariables.put("THREAD_COUNT", String.valueOf(threadCount));
         }
 
-        return new ProcessInThread(arguments, jvmArgs, classpath, properties, environmentVariables, workingDirectory);
+        return new ProcessInThread(arguments, jvmArgs, classpath, properties,
+                environmentVariables, workingDirectory, threadTimeout);
     }
 
     private List<String> getThreadGeneratorArguments(File threadFolder) {

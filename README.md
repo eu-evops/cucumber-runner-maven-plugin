@@ -8,7 +8,7 @@ Maven plugin for running cucumber features in parallel using cucumber's Main cla
     <plugin>
           <groupId>eu.evops.maven.plugins</groupId>
           <artifactId>cucumber-runner-maven-plugin</artifactId>
-          <version>1.12</version>
+          <version>1.15</version>
      </plugin>
     </plugins>
   </build>
@@ -38,6 +38,9 @@ You can also specify other cucumber related configurations, a list of them is be
 | threadCount | ```int``` | Number of process to start | Number of available CPU cores on the system |
 | enhancedJsonReporting| ```boolean``` | When set to true, reports are generated after each scenario and saved to disk and reports are updated| false |
 | jvmArgs | ```String``` | JVM arguments that will be passed to cucumber process | empty string |
+
+# Requirements
+Maven 3, Java 8
 
 # Test execution
 

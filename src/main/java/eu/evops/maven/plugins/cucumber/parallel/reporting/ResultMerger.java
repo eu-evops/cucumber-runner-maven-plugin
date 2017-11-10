@@ -1,4 +1,4 @@
-package eu.evops.maven.pluins.cucumber.parallel.reporting;
+package eu.evops.maven.plugins.cucumber.parallel.reporting;
 
 import java.io.File;
 import java.util.List;

@@ -1,4 +1,4 @@
-package eu.evops.maven.pluins.cucumber.parallel;
+package eu.evops.maven.plugins.cucumber.parallel;
 
 /**
  * Created by n450777 on 29/03/2016.

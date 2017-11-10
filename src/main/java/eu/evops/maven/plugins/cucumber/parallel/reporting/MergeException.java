@@ -1,4 +1,4 @@
-package eu.evops.maven.pluins.cucumber.parallel.reporting;
+package eu.evops.maven.plugins.cucumber.parallel.reporting;
 
 /**
  * Created by n450777 on 30/03/2016.
@@ -21,7 +21,7 @@ public class MergeException extends Throwable {
      *                unknown.)
      * @since 1.4
      */
-    public MergeException(String message, Throwable cause) {
+    MergeException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -36,7 +36,7 @@ public class MergeException extends Throwable {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public MergeException(String message) {
+    MergeException(String message) {
         super(message);
     }
 }
