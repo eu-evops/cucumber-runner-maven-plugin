@@ -1,12 +1,15 @@
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.nio.file.Files.readAllBytes;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -17,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 public class MojoTest {
     private File testProjectDirectory = new File(".", "test-project").getAbsoluteFile();
     private File testProjectWithJvmArgs = new File(".", "test-project-jvm-args").getAbsoluteFile();
+    private File testProjectToIgnoreTestFailures = new File(".", "test-project-testFailureIgnore").getAbsoluteFile();
 
     @Test
     public void testStreamingCombinedHtmlFolderIsGeneratedWhenAThreadIsStopped() throws IOException, InterruptedException {
@@ -94,5 +98,44 @@ public class MojoTest {
         File cucumberHtmlReports = new File(cucumberPath);
         assertTrue("Combined Html Reports are not generated when all/one of the cucumber threads interrupted",
                 cucumberHtmlReports.exists());
+    }
+
+    @Test
+    public void testThatTestFailuresAreNotIgnoredWhenTestFailureIgnoreIsFalse() throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.directory(testProjectToIgnoreTestFailures);
+        processBuilder.command("mvn", "clean", "integration-test", "-DcucumberRunner.test.failure.ignore=false");
+
+        Process start = processBuilder.start();
+        start.waitFor();
+
+        String lines;
+
+        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(start.getInputStream())) ) {
+            lines = String.join(System.lineSeparator(), reader.lines().collect(toList()));
+        }
+
+        assertTrue(lines.contains("BUILD FAILURE"));
+        assertTrue(lines.contains("Some of the threads have failed, please inspect output folder:"));
+    }
+
+    @Test
+    public void testThatTestFailuresAreIgnoredWhenTestFailureIgnoreIsTrue() throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.directory(testProjectToIgnoreTestFailures);
+        processBuilder.command("mvn", "clean", "integration-test", "-DcucumberRunner.test.failure.ignore=true");
+
+        Process start = processBuilder.start();
+        start.waitFor();
+
+        String lines;
+
+        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(start.getInputStream())) ) {
+            lines = String.join(System.lineSeparator(), reader.lines().collect(toList()));
+        }
+
+        System.out.println(lines);
+
+        assertTrue(lines.contains("BUILD SUCCESS"));
     }
 }

@@ -19,12 +19,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -141,6 +136,13 @@ public class Run extends AbstractMojo {
     @Parameter(property = "cucumberRunner.combineReports")
     boolean combineReports;
 
+    /**
+     * Controls failing the build if their are test failures. Needed for CI systems such
+     * as Bamboo that allow quarantining of failing tests.
+     */
+    @Parameter(property = "cucumberRunner.test.failure.ignore")
+    boolean testFailureIgnore;
+
     private File threadFolder;
     private String streamingFormatterClassName = StreamingJSONFormatter.class.getName();
 
@@ -235,7 +237,7 @@ public class Run extends AbstractMojo {
                 report();
             }
 
-            if(!haveAllThreadsPassed(threads)) {
+            if(!testFailureIgnore && !haveAllThreadsPassed(threads)) {
                 throw new MojoFailureException(format("Some of the threads have failed, please inspect output folder: %s", getThreadFolder().getAbsolutePath()));
             }
         }
