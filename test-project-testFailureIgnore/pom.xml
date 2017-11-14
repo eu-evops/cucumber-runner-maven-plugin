@@ -36,6 +36,24 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>ignore-test-failures</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>eu.evops.maven.plugins</groupId>
+                        <artifactId>cucumber-runner-maven-plugin</artifactId>
+                        <version>1.16-SNAPSHOT</version>
+                        <configuration>
+                            <testFailureIgnore>true</testFailureIgnore>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>info.cukes</groupId>

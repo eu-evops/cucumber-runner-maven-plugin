@@ -101,7 +101,7 @@ public class MojoTest {
     }
 
     @Test
-    public void testThatTestFailuresAreNotIgnoredWhenTestFailureIgnoreIsFalse() throws IOException, InterruptedException {
+    public void testThatTestFailuresAreNotIgnoredWhenTestFailureIgnoreIsFalseUsingJVMArgs() throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectToIgnoreTestFailures);
         processBuilder.command("mvn", "clean", "integration-test", "-DcucumberRunner.test.failure.ignore=false");
@@ -120,7 +120,7 @@ public class MojoTest {
     }
 
     @Test
-    public void testThatTestFailuresAreIgnoredWhenTestFailureIgnoreIsTrue() throws IOException, InterruptedException {
+    public void testThatTestFailuresAreIgnoredWhenTestFailureIgnoreIsTrueUsingJVMArgs() throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectToIgnoreTestFailures);
         processBuilder.command("mvn", "clean", "integration-test", "-DcucumberRunner.test.failure.ignore=true");
@@ -135,6 +135,43 @@ public class MojoTest {
         }
 
         System.out.println(lines);
+
+        assertTrue(lines.contains("BUILD SUCCESS"));
+    }
+
+    @Test
+    public void testThatTestFailuresAreNotIgnoredByDefault() throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.directory(testProjectToIgnoreTestFailures);
+        processBuilder.command("mvn", "clean", "integration-test");
+
+        Process start = processBuilder.start();
+        start.waitFor();
+
+        String lines;
+
+        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(start.getInputStream())) ) {
+            lines = String.join(System.lineSeparator(), reader.lines().collect(toList()));
+        }
+
+        assertTrue(lines.contains("BUILD FAILURE"));
+        assertTrue(lines.contains("Some of the threads have failed, please inspect output folder:"));
+    }
+
+    @Test
+    public void testThatTestFailuresAreIgnoredWhenTestFailureIgnoreIsTrue() throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.directory(testProjectToIgnoreTestFailures);
+        processBuilder.command("mvn", "clean", "integration-test", "-Pignore-test-failures");
+
+        Process start = processBuilder.start();
+        start.waitFor();
+
+        String lines;
+
+        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(start.getInputStream())) ) {
+            lines = String.join(System.lineSeparator(), reader.lines().collect(toList()));
+        }
 
         assertTrue(lines.contains("BUILD SUCCESS"));
     }
