@@ -141,6 +141,13 @@ public class Run extends AbstractMojo {
     @Parameter(property = "cucumberRunner.combineReports")
     boolean combineReports;
 
+    /**
+     * Controls failing the build if their are test failures. Needed for CI systems such
+     * as Bamboo that allow quarantining of failing tests.
+     */
+    @Parameter(property = "cucumberRunner.test.failure.ignore")
+    boolean testFailureIgnore;
+
     private File threadFolder;
     private String streamingFormatterClassName = StreamingJSONFormatter.class.getName();
 
@@ -235,7 +242,7 @@ public class Run extends AbstractMojo {
                 report();
             }
 
-            if(!haveAllThreadsPassed(threads)) {
+            if(!testFailureIgnore && !haveAllThreadsPassed(threads)) {
                 throw new MojoFailureException(format("Some of the threads have failed, please inspect output folder: %s", getThreadFolder().getAbsolutePath()));
             }
         }

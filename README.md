@@ -38,6 +38,7 @@ You can also specify other cucumber related configurations, a list of them is be
 | threadCount | ```int``` | Number of process to start | Number of available CPU cores on the system |
 | enhancedJsonReporting| ```boolean``` | When set to true, reports are generated after each scenario and saved to disk and reports are updated| false |
 | jvmArgs | ```String``` | JVM arguments that will be passed to cucumber process | empty string |
+| testFailureIgnore | ```boolean``` | When set to true, test failures are ignored when determining if the build succeeded. Use ```cucumberRunner.test.failure.ignore``` to pass it in as a system property at runtime. | false |
 
 # Requirements
 Maven 3, Java 8
