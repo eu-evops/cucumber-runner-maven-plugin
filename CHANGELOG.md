@@ -1,3 +1,6 @@
+# 1.16
+- New parameter cucumberRunner.test.failure.ignore, ignores test failures while calculating maven run status (thanks @chdavi)
+
 # 1.15
 - Requires Java 1.8 from now on
 - Cleaning up unnecessary log messages
