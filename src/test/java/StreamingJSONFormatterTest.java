@@ -65,9 +65,11 @@ public class StreamingJSONFormatterTest {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(testProjectDirectory);
         processBuilder.command("mvn",
+                "clean",
                 "integration-test",
                 "-DcucumberRunner.features=src/test/resources-1",
-                "-DuseEnhancedJsonReporting=true"
+                "-DuseEnhancedJsonReporting=true",
+                "-DcucumberRunner.ignore.test.failure"
         );
 
         Process start = processBuilder.start();

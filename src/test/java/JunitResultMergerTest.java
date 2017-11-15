@@ -56,6 +56,22 @@ public class JunitResultMergerTest {
     }
 
     @Test
+    public void ignoresEmptyFiles() throws MergeException, IOException {
+        junitResultMerger = new JunitResultMerger();
+        reports = new ArrayList<>();
+
+        for (int i = 1; i <= 4; i++) {
+            URL report = JunitResultMergerTest.class
+                    .getClassLoader().getResource(format("junit/report%d.xml", i));
+            reports.add(report.getFile());
+        }
+
+        File outputFolder = FileUtils.getTempDirectory();
+        outputFile = junitResultMerger.merge(outputFolder, reports);
+        outputFile.deleteOnExit();
+    }
+
+    @Test
     public void generatesValidXml()
             throws MergeException, IOException, SAXException {
         DOMParser parser = new DOMParser();
