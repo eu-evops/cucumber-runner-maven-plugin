@@ -1,3 +1,6 @@
+# 1.17
+- Combining results by default (generates combined junit, json and pretty cucumber reports)
+
 # 1.16
 - New parameter cucumberRunner.test.failure.ignore, ignores test failures while calculating maven run status (thanks @chdavi)
 

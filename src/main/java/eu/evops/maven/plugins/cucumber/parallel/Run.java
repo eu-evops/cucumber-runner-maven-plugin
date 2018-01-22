@@ -81,26 +81,26 @@ public class Run extends AbstractMojo {
     /**
      * List of plugins in a format of plugin[:path or url]
      */
-    @Parameter(property = "cucumberRunner.plugins")
-    private List<String> plugins = new ArrayList<>();
+    @Parameter(property = "cucumberRunner.plugins", defaultValue = "json:")
+    private List<String> plugins = Collections.emptyList();
 
     /**
      * List of scenario name regex expressions to execute
      */
     @Parameter(property = "cucumberRunner.scenarioNames")
-    private List<String> scenarioNames = new ArrayList<>();
+    private List<String> scenarioNames = Collections.emptyList();
 
     /**
      * Thread timeout in minutes
      */
-    @Parameter(property = "cucumberRunner.threadTimeout")
-    private int threadTimeout = 60;
+    @Parameter(property = "cucumberRunner.threadTimeout", defaultValue = "60")
+    private int threadTimeout;
 
     /**
      * Scenario generator timeout in seconds
      */
-    @Parameter(property = "cucumberRunner.scenarioGeneratorTimeout")
-    private int scenarioGeneratorTimeout = 10;
+    @Parameter(property = "cucumberRunner.scenarioGeneratorTimeout", defaultValue = "10")
+    private int scenarioGeneratorTimeout;
 
     /**
      * Whether to execute dry run
@@ -118,11 +118,6 @@ public class Run extends AbstractMojo {
     boolean enhancedJsonReporting = false;
 
     /**
-     * Don't colour terminal output.
-     */
-    boolean monochrome = true;
-
-    /**
      * Treat undefined and pending steps as errors.
      */
     @Parameter
@@ -135,10 +130,10 @@ public class Run extends AbstractMojo {
     int threadCount;
 
     /**
-     * Will use reporter merge facility to comine json and junit reports (only if
+     * Will use reporter merge facility to combine json and junit reports (only if
      * they were specified in the plugin section)
      */
-    @Parameter(property = "cucumberRunner.combineReports")
+    @Parameter(property = "cucumberRunner.combineReports", defaultValue = "true")
     boolean combineReports;
 
     /**
@@ -223,12 +218,15 @@ public class Run extends AbstractMojo {
             }
 
             getLog().info("Cucumber execution configuration:");
-            getLog().info(format("- Features:          %s", String.join(", ", this.features)));
-            getLog().info(format("- Included tags:     %s", String.join(", ", this.includeTags)));
-            getLog().info(format("- Excluded tags:     %s", String.join(", ", this.excludeTags)));
-            getLog().info(format("- Thread timeout:    %d minutes", this.threadTimeout));
-            getLog().info(format("- Number of threads: %d", this.threadCount));
-            getLog().info(format("- Report folder:     %s", this.outputFolder.getAbsolutePath()));
+            getLog().info(format("- Features:            %s", String.join(", ", this.features)));
+            getLog().info(format("- Included tags:       %s", String.join(", ", this.includeTags)));
+            getLog().info(format("- Excluded tags:       %s", String.join(", ", this.excludeTags)));
+            getLog().info(format("- Glue paths:          %s", String.join(", ", this.gluePaths)));
+            getLog().info(format("- Plugins:             %s", String.join(", ", this.plugins)));
+            getLog().info(format("- Thread timeout:      %d minutes", this.threadTimeout));
+            getLog().info(format("- Number of threads:   %d", this.threadCount));
+            getLog().info(format("- Ignore test failure: %s", this.testFailureIgnore));
+            getLog().info(format("- Report folder:       file://%s", this.outputFolder.getAbsolutePath()));
             getLog().info("========================================================================");
             getLog().info(format("Running cucumber with %d threads, each thread will run up to 1 hour ...", threads.size()));
 
@@ -471,7 +469,6 @@ public class Run extends AbstractMojo {
     private List<String> getThreadGeneratorArguments(File threadFolder) {
         List<String> args = getCommonArguments();
         args.add(CucumberArguments.DryRun.getArg());
-
         args.add(CucumberArguments.Plugin.getArg());
         args.add(format(
                 "%s:%s",

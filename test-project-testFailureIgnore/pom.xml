@@ -44,7 +44,6 @@
                     <plugin>
                         <groupId>eu.evops.maven.plugins</groupId>
                         <artifactId>cucumber-runner-maven-plugin</artifactId>
-                        <version>1.16-SNAPSHOT</version>
                         <configuration>
                             <testFailureIgnore>true</testFailureIgnore>
                         </configuration>
