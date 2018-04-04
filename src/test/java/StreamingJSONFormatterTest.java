@@ -73,6 +73,7 @@ public class StreamingJSONFormatterTest {
         );
 
         Process start = processBuilder.start();
+
         start.waitFor();
 
         String cucumberPath = String.format("%s/test-project/target/cucumber/combined-html/cucumber-html-reports",

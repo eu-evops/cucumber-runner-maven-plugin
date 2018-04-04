@@ -18,7 +18,7 @@
             <plugin>
                 <groupId>eu.evops.maven.plugins</groupId>
                 <artifactId>cucumber-runner-maven-plugin</artifactId>
-                <version>1.18-SNAPSHOT</version>
+                <version>1.19-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>integration</id>
