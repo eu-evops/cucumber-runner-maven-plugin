@@ -2,6 +2,8 @@ import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import eu.evops.maven.plugins.cucumber.parallel.reporting.JunitResultMerger;
 import eu.evops.maven.plugins.cucumber.parallel.reporting.MergeException;
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.core.IsEqual;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -35,7 +37,7 @@ public class JunitResultMergerTest {
     private File outputFile;
 
     @Before
-    public void setup() throws IOException, MergeException {
+    public void setup() throws MergeException {
         junitResultMerger = new JunitResultMerger();
         reports = new ArrayList<>();
 
@@ -51,12 +53,12 @@ public class JunitResultMergerTest {
     }
 
     @Test
-    public void canGenerateCombinedReport() throws IOException, MergeException {
+    public void canGenerateCombinedReport() throws IOException {
         Files.readAllLines(Paths.get(outputFile.getAbsolutePath()));
     }
 
     @Test
-    public void ignoresEmptyFiles() throws MergeException, IOException {
+    public void ignoresEmptyFiles() throws MergeException {
         junitResultMerger = new JunitResultMerger();
         reports = new ArrayList<>();
 
@@ -73,9 +75,36 @@ public class JunitResultMergerTest {
 
     @Test
     public void generatesValidXml()
-            throws MergeException, IOException, SAXException {
+            throws IOException, SAXException {
         DOMParser parser = new DOMParser();
         parser.parse(new InputSource(new FileReader(outputFile)));
+    }
+
+    @Test
+    public void takesSkippedTestsIntoConsideration() throws IOException, SAXException {
+        DOMParser parser = new DOMParser();
+        parser.parse(new InputSource(new FileReader(outputFile)));
+
+        String numberOfSkipped = parser.getDocument().getDocumentElement().getAttribute("skipped");
+        Assert.assertThat(numberOfSkipped, IsEqual.equalTo("1"));
+    }
+
+    @Test
+    public void correctNumberOfTestsIsReported() throws IOException, SAXException {
+        DOMParser parser = new DOMParser();
+        parser.parse(new InputSource(new FileReader(outputFile)));
+
+        String numberOfSkipped = parser.getDocument().getDocumentElement().getAttribute("tests");
+        Assert.assertThat(numberOfSkipped, IsEqual.equalTo("10"));
+    }
+
+    @Test
+    public void correctNumberOfFailuresIsReported() throws IOException, SAXException {
+        DOMParser parser = new DOMParser();
+        parser.parse(new InputSource(new FileReader(outputFile)));
+
+        String numberOfFailed = parser.getDocument().getDocumentElement().getAttribute("failures");
+        Assert.assertThat(numberOfFailed, IsEqual.equalTo("3"));
     }
 
     @Test

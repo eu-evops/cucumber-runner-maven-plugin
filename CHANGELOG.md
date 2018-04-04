@@ -1,3 +1,7 @@
+# 1.18
+- Combined JUnit report now correctly shows skipped test cases
+- Strict parameter is exposed as system property `cucumberRunner.strict`
+
 # 1.17
 - Combining results by default (generates combined junit, json and pretty cucumber reports)
 

@@ -90,6 +90,11 @@ public class JunitResultMerger implements ResultMerger {
                             XPathConstants.NODESET);
             rootElement.setAttribute("tests", String.valueOf(tests.getLength()));
 
+            DTMNodeList skipped = (DTMNodeList) xpath
+                    .evaluate("//testcase[skipped]", combinedDocument,
+                            XPathConstants.NODESET);
+            rootElement.setAttribute("skipped", String.valueOf(skipped.getLength()));
+
 
         } catch (XPathExpressionException e) {
             throw new MergeException("Could not find nodes using xpath", e);

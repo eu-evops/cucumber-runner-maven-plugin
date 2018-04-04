@@ -4,6 +4,9 @@
     </testcase>
     <testcase classname="Suite 2" name="Test Case 2" time="0">
     </testcase>
+    <testcase classname="Suite 2" name="Test Case 3" time="0">
+        <skipped>This is skipped</skipped>
+    </testcase>
     <testcase classname="Suite 3" name="Test Case 1" time="0">
         <failure message="Scenario failed"><![CDATA[Error message]]></failure>
     </testcase>
